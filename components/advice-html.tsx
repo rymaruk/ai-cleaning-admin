@@ -1,6 +1,6 @@
 "use client";
 
-import { sanitizeAdviceHtml, wrapProductNamesInLinks } from "@/lib/utils/advice-html";
+import { sanitizeAdviceHtml, wrapProductNamesInLinks, wrapLastParagraphInStrong } from "@/lib/utils/advice-html";
 
 const ADVICE_HTML_CLASS =
   "text-sm text-foreground [&_p]:mb-2 [&_p:last-child]:mb-0 [&_strong]:font-semibold [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:opacity-90";
@@ -25,6 +25,7 @@ export function AdviceHtml({ content, products }: AdviceHtmlProps) {
   if (products?.length) {
     toRender = wrapProductNamesInLinks(toRender, products);
   }
+  // toRender = wrapLastParagraphInStrong(toRender);
   return (
     <div className={ADVICE_HTML_CLASS} dangerouslySetInnerHTML={{ __html: toRender }} />
   );

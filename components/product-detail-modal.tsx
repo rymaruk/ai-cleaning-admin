@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { ProductMatch } from "@/lib/product-types";
 import { formatPrice } from "@/lib/utils/format";
 import { getProductImageUrl } from "@/lib/utils/products";
+import { useCart } from "@/context/cart-context";
 
 type ProductDetailModalProps = {
   product: ProductMatch | null;
@@ -27,6 +28,8 @@ export function ProductDetailModal({
   onClose,
 }: ProductDetailModalProps) {
   const [reasonState, setReasonState] = useState<ReasonState>({ status: "idle" });
+  const { addItem, isInCart } = useCart();
+  const inCart = product ? isInCart(product.id) : false;
 
   useEffect(() => {
     if (!open || !product || !query.trim()) {
@@ -84,7 +87,7 @@ export function ProductDetailModal({
     >
       <div
         className="bg-background rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       >
         {product && (
           <>
@@ -144,20 +147,36 @@ export function ProductDetailModal({
                 )}
               </div>
 
-              <div className="flex gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="flex-1 rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
-                >
-                  Закрити
-                </button>
+              <div className="flex flex-col gap-2 pt-2">
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!inCart) addItem(product);
+                      onClose();
+                    }}
+                    className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium ${
+                      inCart
+                        ? "bg-yellow-500 text-yellow-950 cursor-default"
+                        : "bg-primary text-primary-foreground hover:bg-primary/90"
+                    }`}
+                  >
+                    {inCart ? "Обрано" : "Обрати"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="flex-1 rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+                  >
+                    Закрити
+                  </button>
+                </div>
                 {product.url && (
                   <a
                     href={product.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 text-center"
+                    className="rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted text-center"
                   >
                     Перейти до товару
                   </a>

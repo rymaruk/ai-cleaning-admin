@@ -14,6 +14,10 @@ declare module "react" {
   export interface RefObject<T> {
     readonly current: T | null;
   }
+  export interface Context<T> {
+    Provider: (props: { value: T; children?: ReactNode }) => ReactElement | null;
+    Consumer: unknown;
+  }
   export type Ref<T> = RefObject<T> | ((instance: T | null) => void) | null;
   export type ComponentProps<T extends keyof JSX.IntrinsicElements> =
     JSX.IntrinsicElements[T] extends { ref?: infer R } ? Record<string, unknown> & { ref?: R } : Record<string, unknown>;
@@ -38,6 +42,9 @@ declare module "react" {
   }
   export function useState<T>(initial: T | (() => T)): [T, (value: T | ((prev: T) => T)) => void];
   export function useCallback<T extends (...args: any[]) => any>(fn: T, deps: unknown[]): T;
+  export function useMemo<T>(factory: () => T, deps: unknown[]): T;
+  export function useContext<T>(context: Context<T | null>): T | null;
+  export function createContext<T>(initialValue: T | null): Context<T | null>;
   export function useRef<T>(initialValue: T | null): RefObject<T>;
   export function useEffect(effect: () => void | (() => void), deps?: unknown[]): void;
   export function forwardRef<T, P = object>(

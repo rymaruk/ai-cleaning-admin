@@ -11,6 +11,17 @@ export function sanitizeAdviceHtml(html: string): string {
     .replace(/<(p|strong|b|br)(\s[^>]*)?>/gi, "<$1>");
 }
 
+/** Wraps the last <p>...</p> paragraph in <strong> if not already. Ensures key takeaway is emphasized. */
+export function wrapLastParagraphInStrong(html: string): string {
+  const lastP = /([\s\S]*)<p>([\s\S]*?)<\/p>\s*$/i;
+  const match = html.match(lastP);
+  if (!match) return html;
+  const inner = match[2].trim();
+  if (!inner) return html;
+  if (/^\s*<strong>[\s\S]*<\/strong>\s*$/i.test(inner)) return html;
+  return match[1] + `<p style="font-style: italic;"><strong>Важливо: ${inner}</strong></p>`;
+}
+
 export function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")

@@ -69,7 +69,11 @@ export function SearchForm({
               Cmd/Ctrl + Enter — пошук
             </span>
             <span className="pointer-events-auto">
-              <Button onClick={() => search()} disabled={loading} size="sm">
+              <Button
+                onClick={() => !loading ? search() : null}
+                size="sm"
+                className={loading ? "bg-expert-yellow-500 text-black hover:bg-expert-yellow-600" : undefined}
+              >
                 {loading ? (
                   <>
                     <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />

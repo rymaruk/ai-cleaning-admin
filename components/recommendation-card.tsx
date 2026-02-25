@@ -7,17 +7,24 @@ import type { ProductMatch } from "@/lib/product-types";
 import type { RecommendedItem } from "@/lib/utils/recommendations";
 import { formatPrice } from "@/lib/utils/format";
 import { getProductImageUrl } from "@/lib/utils/products";
+import { useCart } from "@/context/cart-context";
 
 const CARD_LINK_CLASS =
   "block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl";
 
-type RecommendationCardProps = RecommendedItem;
+type RecommendationCardProps = RecommendedItem & {
+  /** When set, shows "Обрати" / "Обрано" button (e.g. for top recommended products) */
+  onAddToCart?: (product: ProductMatch) => void;
+};
 
 export function RecommendationCard({
   product,
   reason,
   usageTip,
+  onAddToCart,
 }: RecommendationCardProps) {
+  const { isInCart } = useCart();
+  const inCart = onAddToCart ? isInCart(product.id) : false;
   const imageUrl = getProductImageUrl(product);
   const priceStr = formatPrice(product.price);
 
@@ -53,6 +60,23 @@ export function RecommendationCard({
           <p className="text-xs text-muted-foreground">
             {[product.brand, product.category_name].filter(Boolean).join(" · ")}
           </p>
+        )}
+        {onAddToCart && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!inCart) onAddToCart(product);
+            }}
+            className={`mt-2 w-full rounded-lg py-1.5 text-xs font-medium ${
+              inCart
+                ? "bg-yellow-500 text-yellow-950 cursor-default"
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
+            }`}
+          >
+            {inCart ? "Обрано" : "Обрати"}
+          </button>
         )}
       </CardContent>
     </Card>

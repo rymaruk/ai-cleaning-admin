@@ -11,6 +11,8 @@ import { AdviceHtml } from "@/components/advice-html";
 import { RecommendationCard } from "@/components/recommendation-card";
 import { ProductCard } from "@/components/product-card";
 import { ProductDetailModal } from "@/components/product-detail-modal";
+import { SelectionPanel } from "@/components/cart";
+import { useCart } from "@/context/cart-context";
 
 type SearchResultsProps = {
   loading: boolean;
@@ -19,6 +21,7 @@ type SearchResultsProps = {
   recommendation: { advice_text: string } | null;
   recommendedList: RecommendedItem[];
   adviceSectionRef: React.RefObject<HTMLDivElement | null>;
+  onOpenSelection?: () => void;
 };
 
 export function SearchResults({
@@ -28,8 +31,10 @@ export function SearchResults({
   recommendation,
   recommendedList,
   adviceSectionRef,
+  onOpenSelection,
 }: SearchResultsProps) {
   const [selectedProduct, setSelectedProduct] = React.useState<ProductMatch | null>(null);
+  const { addItem } = useCart();
   const showResults = !loading && matches.length > 0;
 
   return (
@@ -40,13 +45,16 @@ export function SearchResults({
           : "flex flex-col shrink-0 h-[0vh] min-h-[0px]"
       }
     >
-      <div className="overflow-y-auto flex-1 p-4 border-none">
+      <div className="overflow-y-auto flex-1 px-4 pt-0 pb-4 border-none">
         {loading && <ResultsSkeleton />}
         {showResults && (
           <>
-            <h2 className="text-xl font-semibold text-foreground mb-4">
-              Ваше рішення щоб <span className="text-yellow-400">{query.trim()}</span>
-            </h2>
+            <div className="h-[60px] sticky top-0 left-0 z-10 mx-[-15px] px-[20px] mb-4 flex items-center justify-between gap-4 bg-white">
+              <h2 className="text-xl font-semibold text-foreground shrink-0">
+                Ваше рішення щоб <span className="text-yellow-400">{query.trim()}</span>
+              </h2>
+              {onOpenSelection && <SelectionPanel onOpen={onOpenSelection} />}
+            </div>
             {recommendation?.advice_text && (
               <div ref={adviceSectionRef} className="mb-4">
                 <Card>
@@ -70,6 +78,7 @@ export function SearchResults({
                       reason={item.reason}
                       usageTip={item.usageTip}
                       confidence={item.confidence}
+                      onAddToCart={addItem}
                     />
                   ))}
                 </div>
@@ -83,6 +92,7 @@ export function SearchResults({
                   key={product.id}
                   product={product}
                   onCardClick={(p) => setSelectedProduct(p)}
+                  onAddToCart={addItem}
                 />
               ))}
             </div>
@@ -102,7 +112,7 @@ export function SearchResults({
 function ResultsSkeleton() {
   return (
     <>
-      <Card className="mb-4 border-none shadow-none mb-6">
+      <Card className="mb-4 border-none shadow-none mb-6 pt-4">
         <CardContent className="p-0 border-none">
           <div className="flex items-center gap-2 mb-3">
             <Skeleton className="h-5 w-16" />
