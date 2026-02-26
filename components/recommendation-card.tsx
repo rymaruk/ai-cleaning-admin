@@ -52,6 +52,15 @@ export function RecommendationCard({
         />
       </div>
       <CardContent className="p-4 space-y-2">
+        <div className="flex items-center gap-1">
+          <Image
+            src="/Karcher-Logo-700x394-1.webp"
+            alt="Kärcher"
+            width={56}
+            height={24}
+            className="h-5 w-auto object-contain opacity-90"
+          />
+        </div>
         <p className="text-base font-medium leading-tight line-clamp-2">{product.name}</p>
         <p className="text-sm font-medium text-green-600">{priceStr}</p>
         <p className="text-xs text-muted-foreground">{reason}</p>

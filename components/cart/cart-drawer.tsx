@@ -124,7 +124,7 @@ export function CartDrawer({ open, onClose, scoped = false, query }: CartDrawerP
                   const imageUrl = getProductImageUrl(item.product);
                   const unitPrice = item.product.price ?? 0;
                   return (
-                    <li key={item.product.id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
+                    <li key={item.product.id} className="group relative flex items-start gap-3 py-3 first:pt-0 last:pb-0">
                       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
                         {imageUrl ? (
                           <Image
@@ -141,39 +141,46 @@ export function CartDrawer({ open, onClose, scoped = false, query }: CartDrawerP
                           </div>
                         )}
                       </div>
-                      <div className="min-w-0 flex-1 space-y-1.5">
-                        {(item.product.brand || item.product.category_name) && (
-                          <p className="text-xs text-muted-foreground">
-                            {[item.product.brand, item.product.category_name].filter(Boolean).join(" · ")}
-                          </p>
-                        )}
-                        <p className="text-sm font-medium line-clamp-2">
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="flex items-center gap-2 space-y-0.5">
+                            <Image
+                              src="/Karcher-Logo-700x394-1.webp"
+                              alt="Kärcher"
+                              width={56}
+                              height={24}
+                              className="h-4 w-auto object-contain opacity-90"
+                            />
+                          </div>
+                        <p className="text-sm font-medium line-clamp-1 mb-2">
                           {item.product.name}
                         </p>
                         <div className="flex items-center justify-between gap-2">
-                          <Input
-                            type="number"
-                            min={1}
-                            value={item.quantity}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              const v = parseInt(e.target.value, 10);
-                              if (!Number.isNaN(v)) updateQuantity(item.product.id, Math.max(1, v));
-                            }}
-                            className="h-8 w-14 shrink-0 text-center text-sm"
-                            aria-label={`Кількість ${item.product.name}`}
-                          />
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm text-muted-foreground">К-сть:</span>
+                            <Input
+                              type="number"
+                              min={1}
+                              value={item.quantity}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                const v = parseInt(e.target.value, 10);
+                                if (!Number.isNaN(v)) updateQuantity(item.product.id, Math.max(1, v));
+                              }}
+                              className="h-8 w-14 shrink-0 text-center text-sm"
+                              aria-label={`Кількість ${item.product.name}`}
+                            />
+                          </div>
                           <p className="text-sm font-medium text-foreground">
-                            {formatPrice(unitPrice)}
+                            {formatPrice(item.quantity * (unitPrice ?? 0))}
                           </p>
                         </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => removeItem(item.product.id)}
-                        className="shrink-0 rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                        className="absolute top-0 right-0 rounded p-1.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
                         aria-label={`Видалити ${item.product.name}`}
                       >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                           <line x1="10" y1="11" x2="10" y2="17" />
                           <line x1="14" y1="11" x2="14" y2="17" />

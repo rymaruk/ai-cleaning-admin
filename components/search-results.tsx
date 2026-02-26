@@ -34,8 +34,16 @@ export function SearchResults({
   onOpenSelection,
 }: SearchResultsProps) {
   const [selectedProduct, setSelectedProduct] = React.useState<ProductMatch | null>(null);
+  const [showBoxShadow, setShowBoxShadow] = React.useState(false);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
   const { addItem } = useCart();
   const showResults = !loading && matches.length > 0;
+
+  const handleScroll = React.useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setShowBoxShadow(el.scrollTop > 50);
+  }, []);
 
   return (
     <div
@@ -45,11 +53,17 @@ export function SearchResults({
           : "flex flex-col shrink-0 h-[0vh] min-h-[0px]"
       }
     >
-      <div className="overflow-y-auto flex-1 px-4 pt-0 pb-4 border-none">
+      <div
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className="overflow-y-auto flex-1 px-4 pt-0 pb-4 border-none"
+      >
         {loading && <ResultsSkeleton />}
         {showResults && (
           <>
-            <div className="h-[60px] sticky top-0 left-0 z-10 mx-[-15px] px-[20px] mb-4 flex items-center justify-between gap-4 bg-white">
+            <div
+              className={`h-[60px] sticky top-0 left-0 z-10 mx-[-15px] px-[20px] mb-4 flex items-center justify-between gap-4 bg-white transition-shadow duration-200 ${showBoxShadow ? "shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]" : ""}`}
+            >
               <h2 className="text-xl font-semibold text-foreground shrink-0">
                 Ваше рішення щоб <span className="text-yellow-400">{query.trim()}</span>
               </h2>
