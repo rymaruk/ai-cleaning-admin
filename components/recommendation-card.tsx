@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,7 @@ const CARD_LINK_CLASS =
 type RecommendationCardProps = RecommendedItem & {
   /** When set, shows "Обрати" / "Обрано" button (e.g. for top recommended products) */
   onAddToCart?: (product: ProductMatch) => void;
+  key?: React.Key;
 };
 
 export function RecommendationCard({
