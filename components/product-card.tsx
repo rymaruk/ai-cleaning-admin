@@ -84,7 +84,7 @@ export function ProductCard({ product, reason, usageTip, onCardClick, onAddToCar
         {onAddToCart && (
           <button
             type="button"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
               e.stopPropagation();
               if (!inCart) onAddToCart(product);
