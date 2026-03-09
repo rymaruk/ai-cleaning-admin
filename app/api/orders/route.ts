@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
       customer_name: String(o.customer_name ?? o.customerName ?? ""),
       customer_phone: String(o.customer_phone ?? o.customerPhone ?? o.phone ?? ""),
       total: Number(o.total ?? 0),
-      items: normalizeOrderItems(o.products ?? o.items ?? []),
+      items: normalizeOrderItems((o.products ?? o.items ?? []) as unknown[]),
       created_at: o.created_at ?? o.createdAt ?? undefined,
     }));
 
@@ -116,11 +116,14 @@ export async function GET(request: NextRequest) {
 }
 
 function normalizeOrderItems(raw: unknown[]): Array<{ product_id: string; name: string; price: number; quantity: number; image_url?: string | null }> {
-  return raw.map((item: Record<string, unknown>) => ({
-    product_id: String(item.product_id ?? item.productId ?? item.id ?? ""),
-    name: String(item.name ?? ""),
-    price: Number(item.price ?? 0),
-    quantity: Number(item.quantity ?? 1),
-    image_url: item.image_url ?? item.imageUrl ?? item.image ?? null,
-  }));
+  return raw.map((item) => {
+    const i = item as Record<string, unknown>;
+    return {
+      product_id: String(i.product_id ?? i.productId ?? i.id ?? ""),
+      name: String(i.name ?? ""),
+      price: Number(i.price ?? 0),
+      quantity: Number(i.quantity ?? 1),
+      image_url: (i.image_url ?? i.imageUrl ?? i.image ?? null) as string | null,
+    };
+  });
 }
