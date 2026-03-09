@@ -19,6 +19,7 @@ type ProductCardProps = {
   onCardClick?: (product: ProductMatch) => void;
   /** When set, shows "Обрати" button to add product to selection (e.g. in search results) */
   onAddToCart?: (product: ProductMatch) => void;
+  key?: string;
 };
 
 export function ProductCard({ product, reason, usageTip, onCardClick, onAddToCart }: ProductCardProps) {
