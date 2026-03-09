@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { createContext } from "react";
 import type { ProductMatch } from "@/lib/product-types";
 import type { CartItem } from "@/lib/cart-types";
 import { cartTotal } from "@/lib/cart-types";
@@ -16,10 +16,7 @@ type CartContextValue = {
   clear: () => void;
 };
 
-const CartContext = (React as unknown as { createContext: typeof createContext }).createContext<CartContextValue | null>(null);
-function createContext<T>(v: T | null): { Provider: React.ComponentType<{ value: T; children?: React.ReactNode }>; _currentValue: T | null } {
-  return (React as any).createContext(v);
-}
+const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = React.useState<CartItem[]>([]);
