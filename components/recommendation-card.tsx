@@ -73,7 +73,7 @@ export function RecommendationCard({
         {onAddToCart && (
           <button
             type="button"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
               e.stopPropagation();
               if (!inCart) onAddToCart(product);
