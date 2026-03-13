@@ -39,9 +39,9 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Protect main widget app so it can only be loaded in an iframe
+  // Protect all non-widget routes so they can only be loaded in an iframe
   // on https://appiclean.com.ua
-  if (pathname === "/") {
+  if (pathname !== "/widget.js") {
     const referer = request.headers.get("referer");
     const secFetchDest = request.headers.get("sec-fetch-dest");
 
@@ -78,6 +78,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/widget.js", "/"],
+  // Apply to widget script and all other routes
+  matcher: ["/widget.js", "/:path*"],
 };
 
