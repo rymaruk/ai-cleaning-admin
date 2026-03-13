@@ -121,7 +121,7 @@ export function CartDrawer({ open, onClose, scoped = false, query, fastPurchaseP
         aria-labelledby="cart-drawer-title"
       >
         <div
-          className="bg-background rounded-xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden"
+          className="bg-background rounded-xl rounded-br-none shadow-xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden"
           onClick={(e: { stopPropagation: () => void }) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between p-4">

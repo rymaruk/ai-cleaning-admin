@@ -15,7 +15,7 @@
   iframe.style.cssText = [
     "display: none",
     "position: fixed",
-    "bottom: -10px",
+    "bottom: 50px",
     "right: -76px",
     "width: 990px",
     "height: 100vh",
@@ -32,33 +32,36 @@
   // Toggle button
   var btn = document.createElement("button");
   btn.innerHTML =
-    '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
-    '<span style="margin-left:8px;font-size:14px;font-weight:600;">Підібрати засіб</span>';
+    '<div style="display:flex;flex-direction:column;align-items:flex-start;margin-right:8px;gap:8px">' +
+    '<span style="font-size:14px;font-weight:600;white-space:nowrap;">Експерт з прибирання</span>' +
+    '<span id="ai-cleaning-widget-typing" style="font-size:14px;font-weight:500;white-space:nowrap;"></span>' +
+    "</div>" +
+    '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="Агент з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-7px;" />';
   btn.style.cssText = [
     "position: fixed",
-    "bottom: 24px",
-    "right: 24px",
+    "bottom: 89px",
+    "right: 37px",
     "display: flex",
     "align-items: center",
-    "background: #2563eb",
+    "background: rgb(118 82 255)",
     "color: #fff",
     "border: none",
     "border-radius: 999px",
-    "padding: 12px 20px",
+    "padding: 12px 48px 12px 18px",
     "cursor: pointer",
     "z-index: 2147483647",
-    "box-shadow: 0 4px 16px rgba(37,99,235,0.4)",
+    "box-shadow: 0 4px 16px rgba(118,82,255,0.4)",
     "font-family: inherit",
     "line-height: 1",
     "transition: background 0.15s ease, transform 0.15s ease",
   ].join(";");
 
   btn.addEventListener("mouseover", function () {
-    btn.style.background = "#1d4ed8";
+    btn.style.background = "rgb(98 62 235)";
     btn.style.transform = "scale(1.03)";
   });
   btn.addEventListener("mouseout", function () {
-    btn.style.background = "#2563eb";
+    btn.style.background = "rgb(118 82 255)";
     btn.style.transform = "scale(1)";
   });
 
@@ -71,8 +74,10 @@
       iframe.style.transform = "translateY(0)";
     });
     btn.innerHTML =
-      '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-      '<span style="margin-left:8px;font-size:14px;font-weight:600;">Закрити</span>';
+      '<span style="font-size:14px;font-weight:600;">Закрити</span>' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    btn.style.padding = "12px 18px";
+    btn.style.right = "20px";
   }
 
   function close() {
@@ -83,13 +88,57 @@
       iframe.style.display = "none";
     }, 200);
     btn.innerHTML =
-      '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
-      '<span style="margin-left:8px;font-size:14px;font-weight:600;">Підібрати засіб</span>';
+      '<div style="display:flex;flex-direction:column;align-items:flex-start;margin-right:8px;gap:8px">' +
+      '<span style="font-size:14px;font-weight:600;white-space:nowrap;">Експерт з прибирання</span>' +
+      '<span id="ai-cleaning-widget-typing" style="font-size:14px;font-weight:500;white-space:nowrap;"></span>' +
+      "</div>" +
+      '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="Агент з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-7px;" />';
+    btn.style.padding = "12px 48px 12px 18px";
   }
 
   btn.addEventListener("click", function () {
     isOpen ? close() : open();
   });
+
+  // Simple typing animation for the secondary line of text
+  var typingPhrases = [
+    "Підібрати рішення чистоти ?",
+    "Підберемо ідеальне рішення...",
+    "Помити вікна ?",
+    "... або ж почистити бруківку ?",
+    "Справимось з будь-яким забрудненням",
+  ];
+  var typingIndex = 0;
+  var typingCharIndex = 0;
+  var typingSpeed = 400;
+  var typingPause = 3000;
+
+  function runTyping() {
+    var el = document.getElementById("ai-cleaning-widget-typing");
+
+    // If button is in 'open' state or element missing, retry later
+    if (!el || isOpen) {
+      setTimeout(runTyping, 300);
+      return;
+    }
+
+    var phrase = typingPhrases[typingIndex];
+    el.textContent = phrase.slice(0, typingCharIndex + 1);
+    typingCharIndex++;
+
+    if (typingCharIndex >= phrase.length) {
+      setTimeout(function () {
+        typingCharIndex = 0;
+        typingIndex = (typingIndex + 1) % typingPhrases.length;
+        setTimeout(runTyping, typingSpeed);
+      }, typingPause);
+    } else {
+      setTimeout(runTyping, typingSpeed);
+    }
+  }
+
+  // Start typing loop
+  runTyping();
 
   document.body.appendChild(iframe);
   document.body.appendChild(btn);

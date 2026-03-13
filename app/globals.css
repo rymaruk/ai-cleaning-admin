@@ -22,12 +22,12 @@
   --border: oklch(0.929 0.013 255.508);
   --input: oklch(0.929 0.013 255.508);
   --ring: oklch(0.704 0.04 256.788);
-  /* Expert yellow — base lab(88 7.15 74.59) as 500, gradation by L */
+  /* Expert yellow — custom 500 at lab(92 -0.19 63.07) */
   --expert-yellow-100: lab(95 7.15 74.59);
   --expert-yellow-200: lab(92 7.15 74.59);
   --expert-yellow-300: lab(90 7.15 74.59);
   --expert-yellow-400: lab(89 7.15 74.59);
-  --expert-yellow-500: lab(88 7.15 74.59);
+  --expert-yellow-500: lab(92 -0.19 63.07);
   --expert-yellow-600: lab(82 7.15 74.59);
   --expert-yellow-700: lab(75 7.15 74.59);
   --expert-yellow-800: lab(65 7.15 74.59);
