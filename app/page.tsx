@@ -52,9 +52,9 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent p-0">
-      <div className="flex flex-1 items-center justify-center">
-      <div className="w-full">
-        <Card className="relative flex flex-col overflow-hidden shadow-lg">
+      <div className="flex flex-1 items-end justify-center">
+        <div className="w-full p-24">
+          <Card className="relative flex flex-col overflow-hidden shadow-[0px_0px_56px_#404040e8] border-[1px] border-[#fbd43900]">
           <CardContent className="flex flex-col min-h-0 p-0 border-none">
             <SearchResults
               loading={loading}
@@ -87,7 +87,7 @@ export default function Home() {
             fastPurchaseProduct={fastPurchaseProduct}
           />
         </Card>
-      </div>
+        </div>
       </div>
     </div>
   );

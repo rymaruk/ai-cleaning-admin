@@ -15,8 +15,8 @@
   iframe.style.cssText = [
     "display: none",
     "position: fixed",
-    "bottom: 80px",
-    "right: 24px",
+    "bottom: 30px",
+    "right: -36px",
     "width: 440px",
     "height: 640px",
     "border: none",
