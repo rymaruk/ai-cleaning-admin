@@ -13,6 +13,8 @@ type ProductDetailModalProps = {
   query: string;
   open: boolean;
   onClose: () => void;
+  /** When set, "Купити" opens cart drawer with this product (fast purchase) instead of adding to cart */
+  onBuyProduct?: (product: ProductMatch) => void;
 };
 
 type ReasonState =
@@ -26,10 +28,20 @@ export function ProductDetailModal({
   query,
   open,
   onClose,
+  onBuyProduct,
 }: ProductDetailModalProps) {
   const [reasonState, setReasonState] = useState<ReasonState>({ status: "idle" });
   const { addItem, isInCart } = useCart();
   const inCart = product ? isInCart(product.id) : false;
+  const handleBuy = (p: ProductMatch) => {
+    if (onBuyProduct) {
+      onBuyProduct(p);
+      onClose();
+    } else {
+      if (!inCart) addItem(p);
+      onClose();
+    }
+  };
 
   useEffect(() => {
     if (!open || !product || !query.trim()) {
@@ -151,17 +163,14 @@ export function ProductDetailModal({
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => {
-                      if (!inCart) addItem(product);
-                      onClose();
-                    }}
+                    onClick={() => handleBuy(product)}
                     className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium ${
-                      inCart
+                      inCart && !onBuyProduct
                         ? "bg-yellow-500 text-yellow-950 cursor-default"
                         : "bg-primary text-primary-foreground hover:bg-primary/90"
                     }`}
                   >
-                    {inCart ? "Обрано" : "Обрати"}
+                    {inCart && !onBuyProduct ? "В корзині" : "Купити"}
                   </button>
                   <button
                     type="button"

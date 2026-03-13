@@ -85,7 +85,7 @@ export function RecommendationCard({
                 : "bg-primary text-primary-foreground hover:bg-primary/90"
             }`}
           >
-            {inCart ? "Обрано" : "Обрати"}
+            {inCart ? "В корзині" : "Купити"}
           </button>
         )}
       </CardContent>

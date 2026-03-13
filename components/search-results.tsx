@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import type { ProductMatch } from "@/lib/product-types";
 import type { RecommendedItem } from "@/lib/utils/recommendations";
@@ -22,6 +22,8 @@ type SearchResultsProps = {
   recommendedList: RecommendedItem[];
   adviceSectionRef: React.RefObject<HTMLDivElement | null>;
   onOpenSelection?: () => void;
+  /** When set, "Купити" opens cart drawer with this product (fast purchase) instead of adding to cart */
+  onBuyProduct?: (product: ProductMatch) => void;
 };
 
 export function SearchResults({
@@ -32,11 +34,13 @@ export function SearchResults({
   recommendedList,
   adviceSectionRef,
   onOpenSelection,
+  onBuyProduct,
 }: SearchResultsProps) {
   const [selectedProduct, setSelectedProduct] = React.useState<ProductMatch | null>(null);
   const [showBoxShadow, setShowBoxShadow] = React.useState(false);
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const { addItem } = useCart();
+  const handleAddToCart = onBuyProduct ?? addItem;
   const showResults = !loading && matches.length > 0;
 
   const handleScroll = React.useCallback(() => {
@@ -48,7 +52,7 @@ export function SearchResults({
   return (
     <div
       className={
-        loading || matches.length > 0
+        showResults
           ? "flex flex-col shrink-0 h-[62vh] min-h-[240px] border-b"
           : "flex flex-col shrink-0 h-[0vh] min-h-[0px]"
       }
@@ -58,7 +62,6 @@ export function SearchResults({
         onScroll={handleScroll}
         className="overflow-y-auto flex-1 px-4 pt-0 pb-4 border-none"
       >
-        {loading && <ResultsSkeleton />}
         {showResults && (
           <>
             <div
@@ -67,23 +70,32 @@ export function SearchResults({
               <h2 className="text-xl font-semibold text-foreground shrink-0">
                 Ваше рішення щоб <span className="text-yellow-400">{query.trim()}</span>
               </h2>
-              {onOpenSelection && <SelectionPanel onOpen={onOpenSelection} />}
             </div>
             {recommendation?.advice_text && (
-              <div ref={adviceSectionRef} className="mb-4">
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="mb-3">
-                      <Badge variant="expert" label="Порада експерта APPI Clean" />
+              <div ref={adviceSectionRef} className="mb-8">
+                <Card className="border-none shadow-none">
+                  <CardContent className="p-0 border-none shadow-none">
+                    <div className="relative translate-x-[-10px] translate-y-[-10px]">
+                      <Image
+                        src="/cleaning-robot-3d-icon-png-download-13763983.png"
+                        alt="Помічник з прибирання"
+                        width={62}
+                        height={62}
+                        className="relative z-10 shrink-0 w-18 h-18 object-contain"
+                      />
+                      <Badge className="z-9 absolute top-6 left-12 py-1.25 pl-6" variant="expert" label="Порада експерта APPI Clean" />
                     </div>
-                    <AdviceHtml content={recommendation.advice_text} products={matches} />
+                    <div className="flex items-start gap-4">
+                      <div className="min-w-0 flex-1 pr-4">
+                        <AdviceHtml content={recommendation.advice_text} products={matches} />
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
             )}
             {recommendedList.length > 0 && (
               <>
-                <p className="text-sm font-medium text-foreground mb-2">Рекомендовано</p>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4">
                   {recommendedList.map((item) => (
                     <RecommendationCard
@@ -92,21 +104,21 @@ export function SearchResults({
                       reason={item.reason}
                       usageTip={item.usageTip}
                       confidence={item.confidence}
-                      onAddToCart={addItem}
+                      onAddToCart={handleAddToCart}
                     />
                   ))}
                 </div>
                 <Separator className="my-4" />
               </>
             )}
-            <p className="text-sm text-muted-foreground mb-3">Усі результати ({matches.length})</p>
+            <p className="text-sm text-muted-foreground mb-3">Також ми рекомендуємо вам подивитися:</p>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {matches.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
                   onCardClick={(p) => setSelectedProduct(p)}
-                  onAddToCart={addItem}
+                  onAddToCart={handleAddToCart}
                 />
               ))}
             </div>
@@ -115,39 +127,11 @@ export function SearchResults({
               query={query}
               open={selectedProduct !== null}
               onClose={() => setSelectedProduct(null)}
+              onBuyProduct={onBuyProduct}
             />
           </>
         )}
       </div>
     </div>
-  );
-}
-
-function ResultsSkeleton() {
-  return (
-    <>
-      <Card className="mb-4 border-none shadow-none mb-6 pt-4">
-        <CardContent className="p-0 border-none">
-          <div className="flex items-center gap-2 mb-3">
-            <Skeleton className="h-5 w-16" />
-            <Skeleton className="h-5 w-24" />
-          </div>
-          <Skeleton className="h-4 w-full mb-2" />
-          <Skeleton className="h-4 w-full mb-2" />
-          <Skeleton className="h-4 w-4/5" />
-        </CardContent>
-      </Card>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-2">
-        {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="border-none">
-            <Skeleton className="aspect-square w-full rounded-t-xl" />
-            <CardContent className="p-4">
-              <Skeleton className="mb-2 h-4 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </>
   );
 }

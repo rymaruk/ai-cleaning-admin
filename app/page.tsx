@@ -9,10 +9,22 @@ import { SearchForm } from "@/components/search-form";
 import { SearchResults } from "@/components/search-results";
 import { CartDrawer } from "@/components/cart";
 import { useCart } from "@/context/cart-context";
+import type { ProductMatch } from "@/lib/product-types";
 
 export default function Home() {
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [fastPurchaseProduct, setFastPurchaseProduct] = useState<ProductMatch | null>(null);
   const { clear } = useCart();
+
+  const openDrawerWithProduct = useCallback((product: ProductMatch) => {
+    setFastPurchaseProduct(product);
+    setCartDrawerOpen(true);
+  }, []);
+
+  const closeCartDrawer = useCallback(() => {
+    setCartDrawerOpen(false);
+    setFastPurchaseProduct(null);
+  }, []);
   const {
     query,
     setQuery,
@@ -40,14 +52,6 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/30 p-4">
-      <div className="absolute right-4 top-4">
-        <Link
-          href="/orders"
-          className="text-sm font-medium text-muted-foreground hover:text-foreground"
-        >
-          Замовлення
-        </Link>
-      </div>
       <div className="flex flex-1 items-center justify-center">
       <div className="w-full max-w-3xl">
         <Card className="relative flex flex-col overflow-hidden shadow-lg">
@@ -60,6 +64,7 @@ export default function Home() {
               recommendedList={recommendedList}
               adviceSectionRef={adviceSectionRef}
               onOpenSelection={() => setCartDrawerOpen(true)}
+              onBuyProduct={openDrawerWithProduct}
             />
             <SearchForm
               query={query}
@@ -76,9 +81,10 @@ export default function Home() {
           </CardContent>
           <CartDrawer
             open={cartDrawerOpen}
-            onClose={() => setCartDrawerOpen(false)}
+            onClose={closeCartDrawer}
             scoped
             query={query}
+            fastPurchaseProduct={fastPurchaseProduct}
           />
         </Card>
       </div>

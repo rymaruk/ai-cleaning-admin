@@ -8,6 +8,9 @@ import { getProductImageUrl } from "@/lib/utils/products";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import type { ProductMatch } from "@/lib/product-types";
+import type { CartItem } from "@/lib/cart-types";
+import { cartTotal } from "@/lib/cart-types";
 
 type CartDrawerProps = {
   open: boolean;
@@ -16,14 +19,40 @@ type CartDrawerProps = {
   scoped?: boolean;
   /** Current search query — shown in title as "Ваш вибір щоб {query}" */
   query?: string;
+  /** When set, drawer shows only this product for fast purchase (no add to cart) */
+  fastPurchaseProduct?: ProductMatch | null;
 };
 
-export function CartDrawer({ open, onClose, scoped = false, query }: CartDrawerProps) {
-  const { items, total, removeItem, updateQuantity, clear } = useCart();
+export function CartDrawer({ open, onClose, scoped = false, query, fastPurchaseProduct }: CartDrawerProps) {
+  const { items: cartItems, total: cartTotalValue, removeItem, updateQuantity, clear } = useCart();
+  const [fastQuantity, setFastQuantity] = React.useState(1);
   const [submitting, setSubmitting] = React.useState(false);
   const [submitResult, setSubmitResult] = React.useState<"idle" | "success" | "error">("idle");
   const [customerName, setCustomerName] = React.useState("");
   const [customerPhone, setCustomerPhone] = React.useState("");
+
+  const isFastPurchase = Boolean(fastPurchaseProduct);
+  const items: CartItem[] = isFastPurchase && fastPurchaseProduct
+    ? [{ product: fastPurchaseProduct, quantity: fastQuantity }]
+    : cartItems;
+  const total = isFastPurchase && fastPurchaseProduct
+    ? (fastPurchaseProduct.price ?? 0) * fastQuantity
+    : cartTotalValue;
+
+  const handleUpdateQuantity = React.useCallback(
+    (productId: string, quantity: number) => {
+      if (isFastPurchase && fastPurchaseProduct && productId === fastPurchaseProduct.id) {
+        setFastQuantity(Math.max(1, quantity));
+      } else {
+        updateQuantity(productId, quantity);
+      }
+    },
+    [isFastPurchase, fastPurchaseProduct, updateQuantity]
+  );
+
+  React.useEffect(() => {
+    if (fastPurchaseProduct) setFastQuantity(1);
+  }, [fastPurchaseProduct?.id]);
 
   const handleSubmit = async () => {
     if (items.length === 0) return;
@@ -59,7 +88,7 @@ export function CartDrawer({ open, onClose, scoped = false, query }: CartDrawerP
       await res.json().catch(() => ({}));
       if (res.ok) {
         setSubmitResult("success");
-        clear();
+        if (!isFastPurchase) clear();
         setTimeout(() => {
           onClose();
           setSubmitResult("idle");
@@ -98,7 +127,7 @@ export function CartDrawer({ open, onClose, scoped = false, query }: CartDrawerP
           <div className="flex items-center justify-between p-4">
             <h2 id="cart-drawer-title" className="text-lg font-semibold">
               {query?.trim() ? (
-                <>Обрано щоб <span className="text-yellow-500">{query.trim()}</span></>
+                <>Купити щоб <span className="text-yellow-500">{query.trim()}</span></>
               ) : (
                 "Обрано"
               )}
@@ -163,7 +192,7 @@ export function CartDrawer({ open, onClose, scoped = false, query }: CartDrawerP
                               value={item.quantity}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 const v = parseInt(e.target.value, 10);
-                                if (!Number.isNaN(v)) updateQuantity(item.product.id, Math.max(1, v));
+                                if (!Number.isNaN(v)) handleUpdateQuantity(item.product.id, Math.max(1, v));
                               }}
                               className="h-8 w-14 shrink-0 text-center text-sm"
                               aria-label={`Кількість ${item.product.name}`}
@@ -174,18 +203,20 @@ export function CartDrawer({ open, onClose, scoped = false, query }: CartDrawerP
                           </p>
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => removeItem(item.product.id)}
-                        className="absolute top-0 right-0 rounded p-1.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
-                        aria-label={`Видалити ${item.product.name}`}
-                      >
+                      {!isFastPurchase && (
+                        <button
+                          type="button"
+                          onClick={() => removeItem(item.product.id)}
+                          className="absolute top-0 right-0 rounded p-1.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
+                          aria-label={`Видалити ${item.product.name}`}
+                        >
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                          <line x1="10" y1="11" x2="10" y2="17" />
-                          <line x1="14" y1="11" x2="14" y2="17" />
-                        </svg>
-                      </button>
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                          </svg>
+                        </button>
+                      )}
                     </li>
                   );
                 })}

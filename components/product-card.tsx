@@ -96,7 +96,7 @@ export function ProductCard({ product, reason, usageTip, onCardClick, onAddToCar
                 : "bg-primary text-primary-foreground hover:bg-primary/90"
             }`}
           >
-            {inCart ? "Обрано" : "Обрати"}
+            {inCart ? "В корзині" : "Купити"}
           </button>
         )}
       </CardContent>

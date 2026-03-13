@@ -1,11 +1,20 @@
 "use client";
 
-import { type ChangeEvent } from "react";
+import { type ChangeEvent, useState, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+const LOADING_PHRASES = [
+  "Майже готово...",
+  "Підбираємо ідеальні варіанти...",
+  "Готуємо щоб запропонувати найкраще...",
+  "Ми вже знайшли те що вам потрібно...",
+  "Ще мить і ваше рішення готове...",
+] as const;
+const PHRASE_ROTATE_MS = 5000;
 
 const QUERY_EXAMPLES = ["помити вікна", "прибрати шерсть з килима", "почистити бруківку"] as const;
 
@@ -34,16 +43,36 @@ export function SearchForm({
   search,
   handleKeyDown,
 }: SearchFormProps) {
+  const [phraseIndex, setPhraseIndex] = useState(0);
+
+  useEffect(() => {
+    if (!loading) return;
+    const id = setInterval(() => {
+      setPhraseIndex((i) => (i + 1) % LOADING_PHRASES.length);
+    }, PHRASE_ROTATE_MS);
+    return () => clearInterval(id);
+  }, [loading]);
+
   return (
     <div className="space-y-4 p-4 shrink-0">
       <div className="flex items-center justify-between gap-4">
-        <div className="space-y-1 min-w-0">
-          <h2 className="text-xl font-semibold leading-none tracking-tight">
+        <div className="min-w-0">
+          <h2 className="text-xl font-semibold leading-none tracking-tight mb-2">
             Агент з прибирання
           </h2>
-          <p className="text-sm text-muted-foreground">
-            Опишіть забруднення, а ми підберемо ідеальне рішення
-          </p>
+          {loading ? (
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <span
+                className="size-5 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
+                aria-hidden
+              />
+              <span>{LOADING_PHRASES[phraseIndex]}</span>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Опишіть забруднення, а ми підберемо ідеальне рішення
+            </p>
+          )}
         </div>
         <Image
           src="https://appiclean.com.ua/content/images/2/400x200l90nn0/36284949921856.webp"
@@ -54,36 +83,40 @@ export function SearchForm({
         />
       </div>
       <div className="space-y-2">
-        <div className="relative">
-          <Textarea
-            placeholder="Наприклад: жирна пляма на кухонній стільниці, відбілювач для білизни..."
+        <div className="relative mb-4">
+          <Input
+            type="text"
+            placeholder=""
             value={query}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            rows={3}
-            className="resize-none pb-14 pr-4"
+            rows={1}
+            className="min-h-[46px] resize-none w-full py-2 pr-24"
             disabled={loading}
           />
-          <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between pointer-events-none">
-            <span className="text-xs text-muted-foreground">
-              Cmd/Ctrl + Enter — пошук
-            </span>
-            <span className="pointer-events-auto">
-              <Button
-                onClick={() => !loading ? search() : null}
-                size="sm"
-                className={loading ? "bg-expert-yellow-500 text-black hover:bg-expert-yellow-600" : undefined}
-              >
-                {loading ? (
-                  <>
-                    <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    шукаємо ідеальне рішення...
-                  </>
-                ) : (
-                  "Знайти"
-                )}
-              </Button>
-            </span>
+          <div className="absolute inset-y-0 right-0 z-10 flex items-stretch pr-2 py-1.5">
+            <Button
+              onClick={() => !loading ? search() : null}
+              size="sm"
+              disabled={loading || !query.trim().length}
+            >
+                <span className="inline-flex items-center gap-1.5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                </span>
+            </Button>
           </div>
         </div>
         <p className="text-xs text-muted-foreground">

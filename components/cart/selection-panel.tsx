@@ -34,7 +34,7 @@ export function SelectionPanel({ onOpen }: SelectionPanelProps) {
         <circle cx="20" cy="21" r="1" />
         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
       </svg>
-      <span>Обрано товарів</span>
+      <span>Корзина</span>
       <span className="rounded-full bg-black/15 px-1.5 py-0.5 font-medium">
         {itemCount}
       </span>
