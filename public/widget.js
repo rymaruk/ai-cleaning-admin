@@ -83,6 +83,13 @@
     btn.style.padding = "8px 18px";
     btn.style.right = "20px";
     btn.style.height = "44px";
+
+      setTimeout(() => {
+        iframe.contentWindow.postMessage(
+          { type: "AI_WIDGET_FOCUS_INPUT" },
+          "https://ai-cleaning-admin.vercel.app"
+        );
+      }, 500);
   }
 
   function close() {

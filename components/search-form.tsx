@@ -45,12 +45,17 @@ export function SearchForm({
   const [phraseIndex, setPhraseIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Focus input after a short delay so it works when rendered in iframe/widget
   useEffect(() => {
-    const id = setTimeout(() => {
-      inputRef.current?.focus();
-    }, 1000);
-    return () => clearTimeout(id);
+    function handleMessage(event: MessageEvent) {
+      const data = event.data as { type?: string } | null;
+      if (data?.type === "AI_WIDGET_FOCUS_INPUT") {
+        inputRef.current?.focus();
+      }
+    }
+
+    window.addEventListener("message", handleMessage);
+  
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
   useEffect(() => {
