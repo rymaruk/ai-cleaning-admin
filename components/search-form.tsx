@@ -3,7 +3,6 @@
 import { type ChangeEvent, useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -16,7 +15,7 @@ const LOADING_PHRASES = [
 ] as const;
 const PHRASE_ROTATE_MS = 5000;
 
-const QUERY_EXAMPLES = ["помити вікна", "прибрати шерсть з килима", "почистити бруківку"] as const;
+const QUERY_EXAMPLES = ["відмити плісняву на вікнах", "прибрати шерсть з килима", "почистити бруківку"] as const;
 
 type SearchFormProps = {
   query: string;
@@ -50,7 +49,7 @@ export function SearchForm({
   useEffect(() => {
     const id = setTimeout(() => {
       inputRef.current?.focus();
-    }, 150);
+    }, 1000);
     return () => clearTimeout(id);
   }, []);
 
@@ -145,7 +144,7 @@ export function SearchForm({
           ))}
         </p>
       </div>
-      <div className="hidden flex flex-wrap items-center gap-4">
+      <div className="hidden flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
           <label htmlFor="matchCount" className="text-sm text-muted-foreground">
             Кількість:
