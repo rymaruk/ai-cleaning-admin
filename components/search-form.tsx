@@ -1,6 +1,6 @@
 "use client";
 
-import { type ChangeEvent, useState, useEffect } from "react";
+import { type ChangeEvent, useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,6 +44,15 @@ export function SearchForm({
   handleKeyDown,
 }: SearchFormProps) {
   const [phraseIndex, setPhraseIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Focus input after a short delay so it works when rendered in iframe/widget
+  useEffect(() => {
+    const id = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 150);
+    return () => clearTimeout(id);
+  }, []);
 
   useEffect(() => {
     if (!loading) return;
@@ -85,13 +94,12 @@ export function SearchForm({
       <div className="space-y-2">
         <div className="relative mb-4">
           <Input
-            autoFocus
+            ref={inputRef}
             type="text"
             placeholder=""
             value={query}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setQuery(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            rows={1}
             className="min-h-[46px] resize-none w-full py-2 pr-24"
             disabled={loading}
           />

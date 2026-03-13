@@ -48,7 +48,7 @@
     "color: #fff",
     "border: none",
     "border-radius: 999px 0px 999px 999px",
-    "padding: 8px 44px 3px 18px",
+    "padding: 6px 44px 3px 18px",
     "cursor: pointer",
     "z-index: 2147483647",
     "box-shadow: rgba(118, 82, 255, 0.4) 0px 4px 16px, inset 0px -1px 0px #ffffff6e",
@@ -57,12 +57,15 @@
     "transition: background 0.15s ease, transform 0.15s ease",
   ].join(";");
 
+  var btnGradient = "linear-gradient(257deg, rgb(255 151 151), rgb(118, 82, 255))";
+  var btnGradientHover = "linear-gradient(257deg, rgb(235 131 131), rgb(98, 62, 235))";
+
   btn.addEventListener("mouseover", function () {
-    btn.style.background = "rgb(98 62 235)";
+    btn.style.background = btnGradientHover;
     btn.style.transform = "scale(1.03)";
   });
   btn.addEventListener("mouseout", function () {
-    btn.style.background = "rgb(118 82 255)";
+    btn.style.background = btnGradient;
     btn.style.transform = "scale(1)";
   });
 
@@ -98,6 +101,7 @@
     btn.style.padding = "8px 48px 3px 18px";
     btn.style.height = "64px";
     btn.style.right = "37px";
+    btn.style.background = btnGradient;
   }
 
   btn.addEventListener("click", function () {
@@ -107,7 +111,7 @@
   // Simple typing animation for the secondary line of text
   var typingPhrases = [
     "Підібрати рішення чистоти ? :)",
-    "Ідеально помити вікна ?",
+    "Ідеально помити вікна ? ;)",
     "... або ж почистити бруківку ? :)",
     "Підберемо ідеальне рішення...",
     "Справимось з будь-яким забрудненням ;)",
