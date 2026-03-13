@@ -96,6 +96,8 @@
       "</div>" +
       '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="Агент з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-7px;" />';
     btn.style.padding = "8px 48px 8px 18px";
+    btn.style.height = "64px";
+    btn.style.right = "37px";
   }
 
   btn.addEventListener("click", function () {
