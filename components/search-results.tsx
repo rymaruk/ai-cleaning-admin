@@ -96,7 +96,7 @@ export function SearchResults({
             )}
             {recommendedList.length > 0 && (
               <>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+                <div className="grid grid-cols-4 gap-4 mb-4">
                   {recommendedList.map((item) => (
                     <RecommendationCard
                       key={item.product.id}
@@ -112,7 +112,7 @@ export function SearchResults({
               </>
             )}
             <p className="text-sm text-muted-foreground mb-3">Також ми рекомендуємо вам подивитися:</p>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-4 gap-4">
               {matches.map((product) => (
                 <ProductCard
                   key={product.id}

@@ -24,9 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uk" data-theme="light" className="light">
+    <html lang="uk" data-theme="light" className="light" style={{ margin: 0, padding: 0, backgroundColor: "transparent" }}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen w-screen flex flex-col p-0`}
+        style={{ margin: 0, padding: 0, backgroundColor: "transparent" }}
       >
         <CartProvider>{children}</CartProvider>
       </body>
