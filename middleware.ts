@@ -39,10 +39,45 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Protect main widget app so it can only be loaded in an iframe
+  // on https://appiclean.com.ua
+  if (pathname === "/") {
+    const referer = request.headers.get("referer");
+    const secFetchDest = request.headers.get("sec-fetch-dest");
+
+    let refererOrigin: string | null = null;
+    if (referer) {
+      try {
+        refererOrigin = new URL(referer).origin;
+      } catch {
+        refererOrigin = null;
+      }
+    }
+
+    const isIframe = secFetchDest === "iframe";
+    const isAllowedParent = refererOrigin === ALLOWED_ORIGIN;
+
+    if (!isIframe || !isAllowedParent) {
+      return new NextResponse(
+        JSON.stringify({
+          error: "Forbidden",
+          message:
+            "Forbidden",
+        }),
+        {
+          status: 403,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/widget.js"],
+  matcher: ["/widget.js", "/"],
 };
 
