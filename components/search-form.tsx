@@ -67,7 +67,7 @@ export function SearchForm({
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
           <h2 className="text-xl font-semibold leading-none tracking-tight mb-2">
-            Агент з прибирання
+            AI експерт з прибирання
           </h2>
           {loading ? (
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
