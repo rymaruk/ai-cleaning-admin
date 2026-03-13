@@ -4,12 +4,14 @@ import { cn } from "@/lib/utils";
 export type InputProps = React.HTMLAttributes<HTMLInputElement> & {
   type?: string;
   ref?: React.Ref<HTMLInputElement>;
+  autoFocus?: boolean;
 };
 
 const Input: React.FC<InputProps> = ({
   className,
   type,
   ref,
+  autoFocus,
   ...props
 }) => (
   <input
@@ -20,6 +22,7 @@ const Input: React.FC<InputProps> = ({
     )}
     ref={ref}
     {...props}
+    autoFocus={autoFocus}
   />
 );
 

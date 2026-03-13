@@ -78,7 +78,7 @@ export function useProductSearch(): UseProductSearchResult {
   const handleKeyDown = useCallback(
     (e: unknown) => {
       const ev = e as KeyboardEvent;
-      if (ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)) {
+      if (ev.key === "Enter" || ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)) {
         ev.preventDefault();
         search();
       }

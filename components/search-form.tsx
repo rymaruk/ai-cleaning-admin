@@ -85,6 +85,7 @@ export function SearchForm({
       <div className="space-y-2">
         <div className="relative mb-4">
           <Input
+            autoFocus
             type="text"
             placeholder=""
             value={query}
