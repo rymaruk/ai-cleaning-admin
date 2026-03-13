@@ -111,7 +111,7 @@ export function SearchResults({
                 <Separator className="my-4" />
               </>
             )}
-            <p className="text-sm text-muted-foreground mb-3">Також ми рекомендуємо вам подивитися:</p>
+            <p className="text-sm text-muted-foreground mb-4">Також рекомендуємо звернути увагу:</p>
             <div className="grid grid-cols-4 gap-4">
               {matches.map((product) => (
                 <ProductCard
