@@ -5,6 +5,8 @@ import { rewriteQueryForSearch } from "@/lib/services/query-rewriter";
 import { rerankCandidates } from "@/lib/services/candidate-reranker";
 import { generateProductReasons } from "@/lib/services/product-reasons";
 import { ProductMatchSchema } from "@/lib/product-types";
+import { getRequestLogContext } from "@/lib/utils/request-context";
+import { insertAiAgentQueryLog } from "@/lib/services/log-ai-query";
 
 export const runtime = "nodejs";
 
@@ -30,6 +32,15 @@ export async function POST(request: NextRequest) {
     const { query } = parsed.data;
     const matchCount = parsed.data.matchCount ?? DEFAULT_PIPELINE_MATCH_COUNT;
     const minSimilarity = parsed.data.minSimilarity ?? DEFAULT_PIPELINE_MIN_SIMILARITY;
+
+    // Log AI agent query for analytics (server-side; IP/user-agent from request)
+    const { ipAddress, userAgent } = getRequestLogContext(request);
+    void insertAiAgentQueryLog({
+      queryText: query,
+      ipAddress,
+      userAgent,
+      metadata: { source: "match-products", matchCount, minSimilarity },
+    }).catch((err) => console.warn("[match-products] Query log failed:", err));
 
     const missing = [
       !process.env.OPENAI_API_KEY && "OPENAI_API_KEY",
