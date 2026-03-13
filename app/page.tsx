@@ -51,9 +51,9 @@ export default function Home() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-muted/30 p-4">
+    <div className="flex min-h-screen flex-col bg-muted/30 p-0">
       <div className="flex flex-1 items-center justify-center">
-      <div className="w-full max-w-3xl">
+      <div className="w-full">
         <Card className="relative flex flex-col overflow-hidden shadow-lg">
           <CardContent className="flex flex-col min-h-0 p-0 border-none">
             <SearchResults

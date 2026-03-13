@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="uk" data-theme="light" className="light">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen w-screen flex flex-col p-0`}
       >
         <CartProvider>{children}</CartProvider>
       </body>
