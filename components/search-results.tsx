@@ -10,8 +10,6 @@ import type { RecommendedItem } from "@/lib/utils/recommendations";
 import { AdviceHtml } from "@/components/advice-html";
 import { RecommendationCard } from "@/components/recommendation-card";
 import { ProductCard } from "@/components/product-card";
-import { ProductDetailModal } from "@/components/product-detail-modal";
-import { SelectionPanel } from "@/components/cart";
 import { useCart } from "@/context/cart-context";
 
 type SearchResultsProps = {
@@ -36,7 +34,6 @@ export function SearchResults({
   onOpenSelection,
   onBuyProduct,
 }: SearchResultsProps) {
-  const [selectedProduct, setSelectedProduct] = React.useState<ProductMatch | null>(null);
   const [showBoxShadow, setShowBoxShadow] = React.useState(false);
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const { addItem } = useCart();
@@ -117,18 +114,13 @@ export function SearchResults({
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onCardClick={(p) => setSelectedProduct(p)}
+                  onCardClick={(p) => {
+                    if (p.url) window.open(p.url, "_blank");
+                  }}
                   onAddToCart={handleAddToCart}
                 />
               ))}
             </div>
-            <ProductDetailModal
-              product={selectedProduct}
-              query={query}
-              open={selectedProduct !== null}
-              onClose={() => setSelectedProduct(null)}
-              onBuyProduct={onBuyProduct}
-            />
           </>
         )}
       </div>
