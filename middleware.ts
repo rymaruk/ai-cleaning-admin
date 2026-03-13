@@ -39,9 +39,9 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Protect all non-widget routes so they can only be loaded in an iframe
+  // Protect main widget app so it can only be loaded in an iframe
   // on https://appiclean.com.ua
-  if (pathname !== "/widget.js") {
+  if (pathname === "/") {
     const referer = request.headers.get("referer");
     const secFetchDest = request.headers.get("sec-fetch-dest");
 
@@ -62,7 +62,7 @@ export function middleware(request: NextRequest) {
         JSON.stringify({
           error: "Forbidden",
           message:
-            "Forbidden",
+            "This widget can only be loaded in an iframe on https://appiclean.com.ua/",
         }),
         {
           status: 403,
@@ -78,7 +78,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Apply to widget script and all other routes
-  matcher: ["/widget.js", "/:path*"],
+  matcher: ["/widget.js", "/"],
 };
 
