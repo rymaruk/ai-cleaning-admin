@@ -39,15 +39,16 @@
     '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="Агент з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-7px;" />';
   btn.style.cssText = [
     "position: fixed",
-    "bottom: 89px",
+    "bottom: 92px",
     "right: 37px",
+    "height: 64px",
     "display: flex",
     "align-items: center",
     "background: rgb(118 82 255)",
     "color: #fff",
     "border: none",
-    "border-radius: 999px",
-    "padding: 12px 48px 12px 18px",
+    "border-radius: 999px 0px 999px 999px",
+    "padding: 8px 44px 8px 18px",
     "cursor: pointer",
     "z-index: 2147483647",
     "box-shadow: 0 4px 16px rgba(118,82,255,0.4)",
@@ -76,8 +77,9 @@
     btn.innerHTML =
       '<span style="font-size:14px;font-weight:600;">Закрити</span>' +
       '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-    btn.style.padding = "12px 18px";
+    btn.style.padding = "8px 18px";
     btn.style.right = "20px";
+    btn.style.height = "44px";
   }
 
   function close() {
@@ -89,11 +91,11 @@
     }, 200);
     btn.innerHTML =
       '<div style="display:flex;flex-direction:column;align-items:flex-start;margin-right:8px;gap:8px">' +
-      '<span style="font-size:14px;font-weight:600;white-space:nowrap;">Експерт з прибирання</span>' +
-      '<span id="ai-cleaning-widget-typing" style="font-size:14px;font-weight:500;white-space:nowrap;"></span>' +
+      '<span style="font-size:14px;font-weight:600;white-space:nowrap; display: flex;">Експерт з прибирання</span>' +
+      '<span id="ai-cleaning-widget-typing" style="font-size:14px;font-weight:500;white-space:nowrap; height: 22px; display: flex;"></span>' +
       "</div>" +
       '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="Агент з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-7px;" />';
-    btn.style.padding = "12px 48px 12px 18px";
+    btn.style.padding = "8px 48px 8px 18px";
   }
 
   btn.addEventListener("click", function () {
@@ -102,16 +104,16 @@
 
   // Simple typing animation for the secondary line of text
   var typingPhrases = [
-    "Підібрати рішення чистоти ?",
+    "Підібрати рішення чистоти ? :)",
     "Підберемо ідеальне рішення...",
     "Помити вікна ?",
     "... або ж почистити бруківку ?",
-    "Справимось з будь-яким забрудненням",
+    "Справимось з будь-яким забрудненням ;)",
   ];
   var typingIndex = 0;
   var typingCharIndex = 0;
-  var typingSpeed = 400;
-  var typingPause = 3000;
+  var typingSpeed = 60;
+  var typingPause = 6000;
 
   function runTyping() {
     var el = document.getElementById("ai-cleaning-widget-typing");
