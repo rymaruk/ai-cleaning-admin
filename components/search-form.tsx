@@ -100,6 +100,7 @@ export function SearchForm({
           <Input
             ref={inputRef}
             type="text"
+            maxLength={120}
             placeholder=""
             value={query}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}

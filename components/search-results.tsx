@@ -62,9 +62,9 @@ export function SearchResults({
         {showResults && (
           <>
             <div
-              className={`h-[60px] sticky top-0 left-0 z-10 mx-[-15px] px-[20px] mb-4 flex items-center justify-between gap-4 bg-white transition-shadow duration-200 ${showBoxShadow ? "shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]" : ""}`}
+              className={`overflow-hidden h-[60px] sticky top-0 left-0 z-10 mx-[-15px] px-[20px] mb-4 flex items-center justify-between gap-4 bg-white transition-shadow duration-200 ${showBoxShadow ? "shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]" : ""}`}
             >
-              <h2 className="text-xl font-semibold text-foreground shrink-0">
+              <h2 className="text-xl font-semibold text-foreground shrink-0 absolute w-[80%] p-0 truncate">
                 Ваше рішення щоб <span className="text-yellow-400">{query.trim()}</span>
               </h2>
             </div>
