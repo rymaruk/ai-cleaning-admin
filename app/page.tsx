@@ -27,6 +27,7 @@ export default function Home() {
   const {
     query,
     setQuery,
+    submittedQuery,
     matchCount,
     setMatchCount,
     minSimilarity,
@@ -58,6 +59,7 @@ export default function Home() {
             <SearchResults
               loading={loading}
               query={query}
+              submittedQuery={submittedQuery}
               matches={matches}
               recommendation={recommendation}
               recommendedList={recommendedList}
@@ -74,6 +76,7 @@ export default function Home() {
               setMinSimilarity={setMinSimilarity}
               loading={loading}
               error={error}
+              hasResults={matches.length > 0}
               search={searchAndClearSelection}
               handleKeyDown={handleKeyDown}
             />

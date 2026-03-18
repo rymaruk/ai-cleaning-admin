@@ -1,6 +1,7 @@
 "use client";
 
 import { type ChangeEvent, useState, useEffect, useRef } from "react";
+import { X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,7 @@ type SearchFormProps = {
   setMinSimilarity: (n: number) => void;
   loading: boolean;
   error: string | null;
+  hasResults: boolean;
   search: (overrideQuery?: string) => Promise<void>;
   handleKeyDown: (e: unknown) => void;
 };
@@ -39,6 +41,7 @@ export function SearchForm({
   setMinSimilarity,
   loading,
   error,
+  hasResults,
   search,
   handleKeyDown,
 }: SearchFormProps) {
@@ -73,18 +76,36 @@ export function SearchForm({
     <div className="space-y-4 p-4 shrink-0">
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0 w-full">
-          <div className={'w-full flex items-center justify-between'}>
-            <h2 className="text-md lg:text-xl font-semibold leading-none tracking-tight mb-2">
-              AI експерт з прибирання
-            </h2>
-            <Image
-                src="https://appiclean.com.ua/content/images/2/400x200l90nn0/36284949921856.webp"
-                alt="Appiclean"
-                width={100}
-                height={40}
-                className="shrink-0 object-contain"
-            />
-          </div>
+          {!hasResults && (
+            <div className="w-full flex items-start justify-between gap-4">
+              <div className={"w-full flex flex-col items-start justify-start"}>
+                <Image
+                  src="https://appiclean.com.ua/content/images/2/400x200l90nn0/36284949921856.webp"
+                  alt="Appiclean"
+                  width={60}
+                  height={20}
+                  className="shrink-0 object-contain ml-[-6px] mt-[-8px] mb-2"
+                />
+                  <h2 className="text-md lg:text-xl font-semibold leading-none tracking-tight mb-2">
+                    AI Експерт з прибирання
+                  </h2>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                variant="link"
+                className="ml-auto px-2 py-0 mr-[-10px] mt-[-10px]"
+                aria-label="Закрити"
+                onClick={() => {
+                  window.parent?.postMessage({ type: "AI_WIDGET_CLOSE" }, "*");
+                }}
+              >
+                <X
+                  className="h-8 w-8"
+                />
+              </Button>
+            </div>
+          )}
           {loading ? (
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <span
@@ -138,22 +159,23 @@ export function SearchForm({
             </Button>
           </div>
         </div>
-        {!query.trim().length && <p className="text-xs text-muted-foreground flex flex-wrap gap-2">
-          Найчастіше запитують:{" "}
-          {QUERY_EXAMPLES.map((example) => (
+        {!hasResults && !query.trim().length && (
+          <p className="text-xs text-muted-foreground flex flex-wrap gap-2">
+            {QUERY_EXAMPLES.map((example) => (
               <button
-                  key={example}
-                  type="button"
-                  onClick={() => {
-                    setQuery(example);
-                    search(example);
-                  }}
-                  className="rounded border border-border bg-muted/50 px-1.5 py-0.5 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                key={example}
+                type="button"
+                onClick={() => {
+                  setQuery(example);
+                  search(example);
+                }}
+                className="rounded border border-border bg-muted/50 px-1.5 py-0.5 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               >
                 {example}
               </button>
-          ))}
-        </p>}
+            ))}
+          </p>
+        )}
       </div>
       <div className="hidden flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">

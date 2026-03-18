@@ -13,6 +13,7 @@ export const DEFAULT_MIN_SIMILARITY = 0.3;
 export type UseProductSearchResult = {
   query: string;
   setQuery: (q: string) => void;
+  submittedQuery: string;
   matchCount: number;
   setMatchCount: (n: number) => void;
   minSimilarity: number;
@@ -30,6 +31,7 @@ export type UseProductSearchResult = {
 
 export function useProductSearch(): UseProductSearchResult {
   const [query, setQuery] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState("");
   const [matchCount, setMatchCount] = useState(DEFAULT_MATCH_COUNT);
   const [minSimilarity, setMinSimilarity] = useState(DEFAULT_MIN_SIMILARITY);
   const [loading, setLoading] = useState(false);
@@ -47,6 +49,7 @@ export function useProductSearch(): UseProductSearchResult {
     }
     setError(null);
     setLoading(true);
+    setSubmittedQuery(q);
     setMatches([]);
     setRewritten(null);
     setRecommendation(null);
@@ -101,6 +104,7 @@ export function useProductSearch(): UseProductSearchResult {
   return {
     query,
     setQuery,
+    submittedQuery,
     matchCount,
     setMatchCount,
     minSimilarity,

@@ -16,6 +16,7 @@ import { useCart } from "@/context/cart-context";
 type SearchResultsProps = {
   loading: boolean;
   query: string;
+  submittedQuery: string;
   matches: ProductMatch[];
   recommendation: { advice_text: string } | null;
   recommendedList: RecommendedItem[];
@@ -28,6 +29,7 @@ type SearchResultsProps = {
 export function SearchResults({
   loading,
   query,
+  submittedQuery,
   matches,
   recommendation,
   recommendedList,
@@ -66,7 +68,7 @@ export function SearchResults({
             >
               <h2 className="flex flex-col text-md font-semibold text-foreground shrink-0 absolute w-[80%] p-0 truncate">
                 <span>Ваше рішення щоб</span>
-                <span className="text-yellow-400">{query.trim()}</span>
+                <span className="text-yellow-400">{submittedQuery}</span>
               </h2>
               <button
                   type="button"
