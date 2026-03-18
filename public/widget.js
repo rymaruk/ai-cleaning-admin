@@ -58,7 +58,7 @@
       '<span style="font-size:14px;font-weight:600;white-space:nowrap;">Експерт з прибирання</span>' +
       '<span style="font-size:14px;font-weight:500;white-space:nowrap;">AI Експерт</span>' +
       "</div>" +
-      '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="АІ Експерт з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-7px;" />';
+      '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="АІ Експерт з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-21px;" />';
     btn.style.padding = "6px 44px 3px 18px";
     btn.style.height = "64px";
     btn.style.right = "37px";
