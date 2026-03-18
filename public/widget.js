@@ -1,6 +1,7 @@
 (function () {
   var WIDGET_URL = "https://ai-cleaning-admin.vercel.app";
   var ALLOWED_ORIGIN = "https://appiclean.com.ua";
+  var HAS_CLICKED_KEY = "ai_cleaning_widget_has_clicked";
 
   if (window.location.origin !== ALLOWED_ORIGIN) {
     return;
@@ -8,6 +9,13 @@
 
   var isMobile = window.innerWidth <= 768;
   var isOpen = false;
+  var hasClicked = false;
+
+  try {
+    hasClicked = window.localStorage.getItem(HAS_CLICKED_KEY) === "1";
+  } catch (e) {
+    // ignore storage access failures
+  }
 
   // Iframe
   var iframe = document.createElement("iframe");
@@ -33,12 +41,32 @@
 
   // Toggle button
   var btn = document.createElement("button");
-  btn.innerHTML =
-    '<div style="display:flex;flex-direction:column;align-items:flex-start;margin-right:8px;gap:8px">' +
-    '<span style="font-size:14px;font-weight:600;white-space:nowrap;">Експерт з прибирання</span>' +
-    '<span id="ai-cleaning-widget-typing" style="font-size:14px;font-weight:500;white-space:nowrap;"></span>' +
-    "</div>" +
-    '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="АІ Експерт з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-7px;" />';
+
+  function renderClosedButton() {
+    if (hasClicked) {
+      btn.innerHTML =
+        '<span style="font-size:14px;font-weight:600;white-space:nowrap;">AI Експерт</span>' +
+        '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="АІ Експерт з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-17px;top:-29px;" />';
+      btn.style.padding = "6px 52px 3px 18px";
+      btn.style.height = "37px";
+      btn.style.right = "20px";
+      btn.style.borderRadius = "999px";
+      return;
+    }
+
+    btn.innerHTML =
+      '<div style="display:flex;flex-direction:column;align-items:flex-start;margin-right:8px;gap:8px">' +
+      '<span style="font-size:14px;font-weight:600;white-space:nowrap;">Експерт з прибирання</span>' +
+      '<span id="ai-cleaning-widget-typing" style="font-size:14px;font-weight:500;white-space:nowrap;"></span>' +
+      "</div>" +
+      '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="АІ Експерт з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-7px;" />';
+    btn.style.padding = "6px 44px 3px 18px";
+    btn.style.height = "64px";
+    btn.style.right = "37px";
+    btn.style.borderRadius = "999px 0px 999px 999px";
+  }
+
+  renderClosedButton();
   btn.style.cssText = [
     "position: fixed",
     "bottom: 92px",
@@ -58,6 +86,8 @@
     "line-height: 1",
     "transition: background 0.15s ease, transform 0.15s ease",
   ].join(";");
+  // Ensure dynamic closed-state styles win over base cssText
+  renderClosedButton();
 
   var btnGradient = "linear-gradient(257deg, rgb(255 151 151), rgb(118, 82, 255))";
   var btnGradientHover = "linear-gradient(257deg, rgb(235 131 131), rgb(98, 62, 235))";
@@ -102,15 +132,7 @@
     setTimeout(function () {
       iframe.style.display = "none";
     }, 200);
-    btn.innerHTML =
-      '<div style="display:flex;flex-direction:column;align-items:flex-start;margin-right:8px;gap:8px">' +
-      '<span style="font-size:14px;font-weight:600;white-space:nowrap; display: flex;">Експерт з прибирання</span>' +
-      '<span id="ai-cleaning-widget-typing" style="font-size:14px;font-weight:500;white-space:nowrap; height: 22px; display: flex;"></span>' +
-      "</div>" +
-      '<img src="https://ai-cleaning-admin.vercel.app/_next/image?url=%2Fcleaning-robot-3d-icon-png-download-13763983.png&w=128&q=75&dpl=dpl_GAxsCZRip8byAL3Ts69Jip9R6X6A" alt="АІ Експерт з прибирання" style="width:68px;height:68px;margin-right:10px;flex-shrink:0;position:absolute;right:-32px;top:-7px;" />';
-    btn.style.padding = "8px 48px 3px 18px";
-    btn.style.height = "64px";
-    btn.style.right = "37px";
+    renderClosedButton();
     btn.style.background = btnGradient;
     btn.style.display = "block"
   }
@@ -125,6 +147,14 @@
   });
 
   btn.addEventListener("click", function () {
+    if (!hasClicked) {
+      hasClicked = true;
+      try {
+        window.localStorage.setItem(HAS_CLICKED_KEY, "1");
+      } catch (e) {
+        // ignore storage access failures
+      }
+    }
     isOpen ? close() : open();
 
   });
@@ -146,7 +176,7 @@
     var el = document.getElementById("ai-cleaning-widget-typing");
 
     // If button is in 'open' state or element missing, retry later
-    if (!el || isOpen) {
+    if (hasClicked || !el || isOpen) {
       setTimeout(runTyping, 300);
       return;
     }
