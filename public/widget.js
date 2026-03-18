@@ -79,13 +79,13 @@
       iframe.style.opacity = "1";
       iframe.style.transform = "translateY(0)";
     });
-    btn.innerHTML =
-      '<span style="font-size:14px;font-weight:600;">Закрити</span>' +
-      '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-    btn.style.padding = "8px 18px";
-    btn.style.right = "20px";
-    btn.style.height = "44px";
-    btn.style.display = isMobile ? "none" : "block"
+    // btn.innerHTML =
+    //   '<span style="font-size:14px;font-weight:600;">Закрити</span>' +
+    //   '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    // btn.style.padding = "8px 18px";
+    // btn.style.right = "20px";
+    // btn.style.height = "44px";
+    btn.style.display = "none"
 
       setTimeout(() => {
         iframe.contentWindow.postMessage(
