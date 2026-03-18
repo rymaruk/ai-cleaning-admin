@@ -71,14 +71,14 @@ export function SearchForm({
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0 w-full">
           <div className={'w-full flex items-center justify-between'}>
-            <h2 className="text-xl font-semibold leading-none tracking-tight mb-2">
+            <h2 className="text-md lg:text-xl font-semibold leading-none tracking-tight mb-2">
               AI експерт з прибирання
             </h2>
             <Image
                 src="https://appiclean.com.ua/content/images/2/400x200l90nn0/36284949921856.webp"
                 alt="Appiclean"
-                width={120}
-                height={60}
+                width={100}
+                height={40}
                 className="shrink-0 object-contain"
             />
           </div>
@@ -135,22 +135,22 @@ export function SearchForm({
             </Button>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground">
+        {!query.trim().length && <p className="text-xs text-muted-foreground flex flex-wrap gap-2">
           Найчастіше запитують:{" "}
           {QUERY_EXAMPLES.map((example) => (
-            <button
-              key={example}
-              type="button"
-              onClick={() => {
-                setQuery(example);
-                search(example);
-              }}
-              className="mr-1.5 rounded border border-border bg-muted/50 px-1.5 py-0.5 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-            >
-              {example}
-            </button>
+              <button
+                  key={example}
+                  type="button"
+                  onClick={() => {
+                    setQuery(example);
+                    search(example);
+                  }}
+                  className="rounded border border-border bg-muted/50 px-1.5 py-0.5 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              >
+                {example}
+              </button>
           ))}
-        </p>
+        </p>}
       </div>
       <div className="hidden flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
