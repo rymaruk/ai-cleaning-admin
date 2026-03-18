@@ -19,7 +19,7 @@
     "right: -76px",
     "max-width: 990px",
     "width: 100%",
-    "height: 100vh",
+    "height: 90vh",
     "border: none",
     "border-radius: 0",
     "box-shadow: none",
@@ -156,6 +156,10 @@
   // Start typing loop
   runTyping();
 
+  window.addEventListener("DOMContentLoaded", function () {
+    var isMobile = window.innerWidth <= 768;
+    iframe.style.right = isMobile ? "0px" : "-76px";
+  });
   document.body.appendChild(iframe);
   document.body.appendChild(btn);
 })();
