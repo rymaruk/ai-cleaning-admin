@@ -69,10 +69,19 @@ export function SearchForm({
   return (
     <div className="space-y-4 p-4 shrink-0">
       <div className="flex items-center justify-between gap-4">
-        <div className="min-w-0">
-          <h2 className="text-xl font-semibold leading-none tracking-tight mb-2">
-            AI експерт з прибирання
-          </h2>
+        <div className="min-w-0 w-full">
+          <div className={'w-full flex items-center justify-between'}>
+            <h2 className="text-xl font-semibold leading-none tracking-tight mb-2">
+              AI експерт з прибирання
+            </h2>
+            <Image
+                src="https://appiclean.com.ua/content/images/2/400x200l90nn0/36284949921856.webp"
+                alt="Appiclean"
+                width={120}
+                height={60}
+                className="shrink-0 object-contain"
+            />
+          </div>
           {loading ? (
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <span
@@ -87,13 +96,6 @@ export function SearchForm({
             </p>
           )}
         </div>
-        <Image
-          src="https://appiclean.com.ua/content/images/2/400x200l90nn0/36284949921856.webp"
-          alt="Appiclean"
-          width={120}
-          height={60}
-          className="shrink-0 object-contain"
-        />
       </div>
       <div className="space-y-2">
         <div className="relative mb-4">
