@@ -16,11 +16,11 @@
   iframe.style.cssText = [
     "display: none",
     "position: fixed",
-    "bottom: 50px",
+    "top: 0px",
     "right: -76px",
     "max-width: 990px",
     "width: 100%",
-    "height: 90vh",
+    "height: 100%",
     "border: none",
     "border-radius: 0",
     "box-shadow: none",
@@ -164,6 +164,7 @@
     var _isMobile = window.innerWidth <= 768;
     iframe.style.right = _isMobile ? "0px" : "-76px";
     iframe.style.bottom = _isMobile ? "0px" : "50px";
+    iframe.style.top = _isMobile ? "0px" : "0px";
   });
   document.body.appendChild(iframe);
   document.body.appendChild(btn);
