@@ -6,6 +6,7 @@
     return;
   }
 
+  var isMobile = window.innerWidth <= 768;
   var isOpen = false;
 
   // Iframe
@@ -19,7 +20,7 @@
     "right: -76px",
     "max-width: 990px",
     "width: 100%",
-    "height: 90vh",
+    "max-height: 90vh",
     "border: none",
     "border-radius: 0",
     "box-shadow: none",
@@ -84,6 +85,7 @@
     btn.style.padding = "8px 18px";
     btn.style.right = "20px";
     btn.style.height = "44px";
+    btn.style.display = isMobile ? "none" : "block"
 
       setTimeout(() => {
         iframe.contentWindow.postMessage(
@@ -110,10 +112,12 @@
     btn.style.height = "64px";
     btn.style.right = "37px";
     btn.style.background = btnGradient;
+    btn.style.display = "block"
   }
 
   btn.addEventListener("click", function () {
     isOpen ? close() : open();
+
   });
 
   // Simple typing animation for the secondary line of text
@@ -157,8 +161,9 @@
   runTyping();
 
   window.addEventListener("DOMContentLoaded", function () {
-    var isMobile = window.innerWidth <= 768;
-    iframe.style.right = isMobile ? "0px" : "-76px";
+    var _isMobile = window.innerWidth <= 768;
+    iframe.style.right = _isMobile ? "0px" : "-76px";
+    iframe.style.bottom = _isMobile ? "0px" : "50px";
   });
   document.body.appendChild(iframe);
   document.body.appendChild(btn);
