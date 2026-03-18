@@ -115,6 +115,15 @@
     btn.style.display = "block"
   }
 
+  // Allow the iframe app to request closing the widget
+  window.addEventListener("message", function (event) {
+    if (event.origin !== WIDGET_URL) return;
+    var data = event.data || {};
+    if (data.type === "AI_WIDGET_CLOSE") {
+      close();
+    }
+  });
+
   btn.addEventListener("click", function () {
     isOpen ? close() : open();
 

@@ -49,7 +49,10 @@ export function SearchForm({
     function handleMessage(event: MessageEvent) {
       const data = event.data as { type?: string } | null;
       if (data?.type === "AI_WIDGET_FOCUS_INPUT") {
-        inputRef.current?.focus();
+        setTimeout(() => {
+          inputRef.current?.focus();
+          inputRef.current?.click();
+        }, 0)
       }
     }
 

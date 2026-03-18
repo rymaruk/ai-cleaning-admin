@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { X } from "lucide-react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -63,9 +64,20 @@ export function SearchResults({
             <div
               className={`overflow-hidden h-[60px] sticky top-0 left-0 z-10 mx-[-15px] px-[20px] mb-4 flex items-center justify-between gap-4 bg-white transition-shadow duration-200 ${showBoxShadow ? "shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]" : ""}`}
             >
-              <h2 className="text-md font-semibold text-foreground shrink-0 absolute w-[80%] p-0 truncate">
-                Ваше рішення щоб <span className="text-yellow-400">{query.trim()}</span>
+              <h2 className="flex flex-col text-md font-semibold text-foreground shrink-0 absolute w-[80%] p-0 truncate">
+                <span>Ваше рішення щоб</span>
+                <span className="text-yellow-400">{query.trim()}</span>
               </h2>
+              <button
+                  type="button"
+                  className="ml-auto mr-[-12px] shrink-0 p-1.5 rounded-full hover:bg-gray-100 transition-colors text-gray-900 hover:text-gray-600"
+                  onClick={() => {
+                    // Tell the embedding page to close the widget iframe
+                    window.parent?.postMessage({ type: "AI_WIDGET_CLOSE" }, "*");
+                  }}
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
             {recommendation?.advice_text && (
               <div ref={adviceSectionRef} className="mb-8">
