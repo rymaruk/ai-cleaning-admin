@@ -20,7 +20,7 @@
     "right: -76px",
     "max-width: 990px",
     "width: 100%",
-    "max-height: 90vh",
+    "height: 90vh",
     "border: none",
     "border-radius: 0",
     "box-shadow: none",
