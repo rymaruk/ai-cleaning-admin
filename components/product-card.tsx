@@ -32,7 +32,7 @@ export function ProductCard({ product, reason, usageTip, onCardClick, onAddToCar
 
   const card = (
     <Card
-      className="overflow-hidden transition-shadow hover:shadow-md border-primary/20 relative"
+      className="overflow-hidden transition-shadow hover:shadow-md border-primary/20 relative group"
       onMouseEnter={() => hasHoverInfo && setHover(true)}
       onMouseLeave={() => setHover(false)}
       {...(onCardClick
@@ -75,13 +75,8 @@ export function ProductCard({ product, reason, usageTip, onCardClick, onAddToCar
             className="h-5 w-auto object-contain opacity-90"
           />
         </div>
-        <p className="text-[14px] font-medium leading-tight line-clamp-2">{product.name}</p>
-        <p className="mt-1 text-sm font-medium text-green-600">{priceStr}</p>
-        {(product.brand || product.category_name) && (
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {[product.brand, product.category_name].filter(Boolean).join(" · ")}
-          </p>
-        )}
+        <p className="text-[14px] font-medium leading-tight line-clamp-2 group-hover:text-yellow-500 transition-colors">{product.name}</p>
+        <p className="mt-1 text-md font-medium text-green-600">{priceStr}</p>
         {onAddToCart && (
           <button
             type="button"
@@ -90,7 +85,7 @@ export function ProductCard({ product, reason, usageTip, onCardClick, onAddToCar
               e.stopPropagation();
               if (!inCart) onAddToCart(product);
             }}
-            className={`mt-2 w-full rounded-lg py-1.5 text-xs font-medium ${
+            className={`mt-2 w-full max-w-1/2 rounded-lg py-1.5 text-xs font-medium ${
               inCart
                 ? "bg-yellow-500 text-yellow-950 cursor-default"
                 : "bg-primary text-primary-foreground hover:bg-primary/90"

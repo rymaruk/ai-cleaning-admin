@@ -52,7 +52,7 @@ export function RecommendationCard({
           label="Рекомендовано"
         />
       </div>
-      <CardContent className="p-4 space-y-2">
+      <CardContent className="p-4 space-y-2 group">
         <div className="flex items-center gap-1">
           <Image
             src="/Karcher-Logo-700x394-1.webp"
@@ -62,15 +62,10 @@ export function RecommendationCard({
             className="h-5 w-auto object-contain opacity-90"
           />
         </div>
-        <p className="text-base font-medium leading-tight line-clamp-2">{product.name}</p>
-        <p className="text-sm font-medium text-green-600">{priceStr}</p>
-        <p className="text-xs text-muted-foreground">{reason}</p>
+        <p className="text-base font-medium leading-tight line-clamp-2 group-hover:text-yellow-500 transition-colors">{product.name}</p>
         <p className="text-xs text-primary/90 italic">{usageTip}</p>
-        {(product.brand || product.category_name) && (
-          <p className="text-xs text-muted-foreground">
-            {[product.brand, product.category_name].filter(Boolean).join(" · ")}
-          </p>
-        )}
+        <p className="text-xs text-muted-foreground">{reason}</p>
+        <p className="text-md font-medium text-green-600">{priceStr}</p>
         {onAddToCart && (
           <button
             type="button"
@@ -79,7 +74,7 @@ export function RecommendationCard({
               e.stopPropagation();
               if (!inCart) onAddToCart(product);
             }}
-            className={`mt-2 w-full rounded-lg py-1.5 text-xs font-medium ${
+            className={`mt-2 w-full rounded-lg py-2 max-w-1/2 text-xs font-medium ${
               inCart
                 ? "bg-yellow-500 text-yellow-950 cursor-default"
                 : "bg-primary text-primary-foreground hover:bg-primary/90"

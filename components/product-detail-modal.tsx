@@ -164,7 +164,7 @@ export function ProductDetailModal({
                   <button
                     type="button"
                     onClick={() => handleBuy(product)}
-                    className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium ${
+                    className={`flex-1 rounded-lg px-4 py-4 max-w-1/2 text-sm font-medium ${
                       inCart && !onBuyProduct
                         ? "bg-yellow-500 text-yellow-950 cursor-default"
                         : "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -175,7 +175,7 @@ export function ProductDetailModal({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="flex-1 rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+                    className="flex-1 rounded-lg border border-input bg-background max-w-1/2 px-4 py-4 text-sm font-medium hover:bg-muted"
                   >
                     Закрити
                   </button>

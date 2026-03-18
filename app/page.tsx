@@ -2,7 +2,6 @@
 /// <reference path="../global.d.ts" />
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { useProductSearch } from "@/hooks/use-product-search";
 import { SearchForm } from "@/components/search-form";
@@ -53,8 +52,8 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-transparent p-0">
       <div className="flex flex-1 items-end justify-center">
-        <div className="w-full p-24">
-          <Card className="relative flex flex-col overflow-hidden shadow-[0px_0px_56px_#404040e8] border-[1px] border-[#fbd43900]">
+        <div className="w-full p-4 md:p-24">
+          <Card className="relative flex flex-col overflow-hidden shadow-[0px_0px_56px_#404040e8] border-width-[1px] border-[#fbd43900]">
           <CardContent className="flex flex-col min-h-0 p-0 border-none">
             <SearchResults
               loading={loading}
