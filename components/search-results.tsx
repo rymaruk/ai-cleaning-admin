@@ -78,7 +78,7 @@ export function SearchResults({
                     window.parent?.postMessage({ type: "AI_WIDGET_CLOSE" }, "*");
                   }}
               >
-                <X className="w-5 h-5" />
+                <X className="w-8 h-8" />
               </button>
             </div>
             {recommendation?.advice_text && (
