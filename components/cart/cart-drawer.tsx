@@ -126,11 +126,7 @@ export function CartDrawer({ open, onClose, scoped = false, query, fastPurchaseP
         >
           <div className="flex items-center justify-between p-4">
             <h2 id="cart-drawer-title" className="text-lg font-semibold">
-              {query?.trim() ? (
-                <>Купити щоб <span className="text-yellow-500">{query.trim()}</span></>
-              ) : (
-                "Обрано"
-              )}
+              Швидке замовлення
             </h2>
             <button
               type="button"

@@ -6,13 +6,14 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import type { ProductContextBrief } from "@/lib/product-types";
 
 const LOADING_PHRASES = [
-  "Майже готово...",
-  "Підбираємо ідеальні варіанти...",
-  "Готуємо щоб запропонувати найкраще...",
+  "Підбираємо найкраще...",
   "Ми вже знайшли те що вам потрібно...",
   "Ще мить і ваше рішення готове...",
+  "Майже готово...",
+  "Вже готові показати...",
 ] as const;
 const PHRASE_ROTATE_MS = 5000;
 
@@ -30,6 +31,9 @@ type SearchFormProps = {
   hasResults: boolean;
   search: (overrideQuery?: string) => Promise<void>;
   handleKeyDown: (e: unknown) => void;
+  contextProduct: ProductContextBrief | null;
+  onClearProductContext: () => void;
+  onProductContextUrl?: (url: string) => void;
 };
 
 export function SearchForm({
@@ -44,25 +48,32 @@ export function SearchForm({
   hasResults,
   search,
   handleKeyDown,
+  contextProduct,
+  onClearProductContext,
+  onProductContextUrl,
 }: SearchFormProps) {
   const [phraseIndex, setPhraseIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
-      const data = event.data as { type?: string } | null;
+      const data = event.data as { type?: string; url?: string } | null;
       if (data?.type === "AI_WIDGET_FOCUS_INPUT") {
         setTimeout(() => {
           inputRef.current?.focus();
           inputRef.current?.click();
-        }, 0)
+        }, 0);
+      }
+      if (data?.type === "AI_WIDGET_SET_PRODUCT_CONTEXT" && typeof data.url === "string" && data.url.trim()) {
+        void onProductContextUrl?.(data.url.trim());
       }
     }
 
     window.addEventListener("message", handleMessage);
-  
+    void onProductContextUrl?.("https://appiclean.com.ua/pylosos-dlia-sukhoho-prybyrannia-z-mishkom-wd-5-v-25-6-22/");
+
     return () => window.removeEventListener("message", handleMessage);
-  }, []);
+  }, [onProductContextUrl]);
 
   useEffect(() => {
     if (!loading) return;
@@ -87,7 +98,7 @@ export function SearchForm({
                   className="shrink-0 object-contain ml-[-6px] mt-[-8px] mb-2"
                 />
                   <h2 className="text-md lg:text-xl font-semibold leading-none tracking-tight mb-2">
-                    AI Експерт з прибирання
+                    AI Експерт
                   </h2>
               </div>
               <Button
@@ -114,7 +125,7 @@ export function SearchForm({
               />
               <span>{LOADING_PHRASES[phraseIndex]}</span>
             </div>
-          ) : !hasResults ? (
+          ) : !hasResults && !contextProduct ? (
             <p className="text-sm text-muted-foreground">
               Привіт! Напиши, що шукаєш - підберемо ідеальне рішення
             </p>
@@ -122,6 +133,37 @@ export function SearchForm({
         </div>
       </div>
       <div className="space-y-2">
+        {contextProduct && (
+          <div className="mb-3 flex items-center gap-3 rounded-lg border border-border bg-muted/40 p-2">
+            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
+              {contextProduct.imageUrl ? (
+                <Image
+                  src={contextProduct.imageUrl}
+                  alt={contextProduct.name}
+                  width={80}
+                  height={80}
+                  className="h-full w-full object-cover"
+                  sizes="80px"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center px-1 text-center text-[10px] text-muted-foreground">
+                  Немає фото
+                </div>
+              )}
+            </div>
+            <p className="min-w-0 flex-1 text-sm font-medium leading-snug">{contextProduct.name}</p>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="shrink-0"
+              aria-label="Прибрати товар з контексту"
+              onClick={onClearProductContext}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+        )}
         <div className="relative mb-4">
           <Input
             ref={inputRef}
@@ -159,7 +201,7 @@ export function SearchForm({
             </Button>
           </div>
         </div>
-        {!hasResults && !query.trim().length && (
+        {!hasResults && !query.trim().length && !contextProduct && (
           <p className="text-xs text-muted-foreground flex flex-wrap gap-2">
             {QUERY_EXAMPLES.map((example) => (
               <button

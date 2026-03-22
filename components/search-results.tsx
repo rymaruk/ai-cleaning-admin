@@ -21,6 +21,8 @@ type SearchResultsProps = {
   recommendation: { advice_text: string } | null;
   recommendedList: RecommendedItem[];
   adviceSectionRef: React.RefObject<HTMLDivElement | null>;
+  /** Якщо true (контекст товару з iframe), не показуємо блок «Також рекомендуємо…» і повну сітку matches — лише порада + картки з recommendedList. */
+  productContextActive?: boolean;
   onOpenSelection?: () => void;
   /** When set, "Купити" opens cart drawer with this product (fast purchase) instead of adding to cart */
   onBuyProduct?: (product: ProductMatch) => void;
@@ -34,6 +36,7 @@ export function SearchResults({
   recommendation,
   recommendedList,
   adviceSectionRef,
+  productContextActive = false,
   onBuyProduct,
 }: SearchResultsProps) {
   const [showBoxShadow, setShowBoxShadow] = React.useState(false);
@@ -114,22 +117,26 @@ export function SearchResults({
                     />
                   ))}
                 </div>
-                <Separator className="my-4" />
+                {!productContextActive && <Separator className="my-4" />}
               </>
             )}
-            <p className="text-sm text-muted-foreground mb-4">Також рекомендуємо звернути увагу:</p>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {matches.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onCardClick={(p) => {
-                    if (p.url) window.open(p.url, "_blank");
-                  }}
-                  onAddToCart={handleAddToCart}
-                />
-              ))}
-            </div>
+            {!productContextActive && (
+              <>
+                <p className="text-sm text-muted-foreground mb-4">Також рекомендуємо звернути увагу:</p>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {matches.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onCardClick={(p) => {
+                        if (p.url) window.open(p.url, "_blank");
+                      }}
+                      onAddToCart={handleAddToCart}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </>
         )}
       </div>

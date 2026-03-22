@@ -40,6 +40,9 @@ export default function Home() {
     search,
     handleKeyDown,
     adviceSectionRef,
+    contextProduct,
+    loadProductContextByUrl,
+    clearProductContext,
   } = useProductSearch();
 
   const searchAndClearSelection = useCallback(
@@ -49,6 +52,11 @@ export default function Home() {
     },
     [clear, search]
   );
+
+  const handleClearProductContext = useCallback(() => {
+    clear();
+    clearProductContext();
+  }, [clear, clearProductContext]);
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent p-0">
@@ -64,6 +72,7 @@ export default function Home() {
               recommendation={recommendation}
               recommendedList={recommendedList}
               adviceSectionRef={adviceSectionRef}
+              productContextActive={contextProduct !== null}
               onOpenSelection={() => setCartDrawerOpen(true)}
               onBuyProduct={openDrawerWithProduct}
             />
@@ -79,6 +88,9 @@ export default function Home() {
               hasResults={matches.length > 0}
               search={searchAndClearSelection}
               handleKeyDown={handleKeyDown}
+              contextProduct={contextProduct}
+              onClearProductContext={handleClearProductContext}
+              onProductContextUrl={loadProductContextByUrl}
             />
           </CardContent>
           <CartDrawer

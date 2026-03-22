@@ -13,3 +13,11 @@ export const ProductMatchSchema = z.object({
 });
 
 export type ProductMatch = z.infer<typeof ProductMatchSchema>;
+
+/** Товар для контексту пошуку (клієнт; фото з products.images[0]). */
+export type ProductContextBrief = {
+  id: string;
+  name: string;
+  url: string;
+  imageUrl: string | null;
+};

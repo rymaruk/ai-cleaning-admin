@@ -29,6 +29,8 @@ function getTechnikaCandidates(matches: ProductMatch[]): ProductMatch[] {
 
 export type RerankerResult = { ok: true; data: RerankerOutput } | { ok: false; error: string };
 
+export type RerankProductContext = { id: string; name: string };
+
 /**
  * Stage 2: From top N candidates, select 1–3 best fits with reasoning.
  * Chooses ONLY from provided candidates; prefers AND-like match to constraints.
@@ -36,7 +38,8 @@ export type RerankerResult = { ok: true; data: RerankerOutput } | { ok: false; e
 export async function rerankCandidates(
   originalQuery: string,
   rewritten: RewriterOutput | null,
-  matches: ProductMatch[]
+  matches: ProductMatch[],
+  options?: { productContext?: RerankProductContext | null }
 ): Promise<RerankerResult> {
   if (matches.length === 0) {
     return {
@@ -103,7 +106,16 @@ export async function rerankCandidates(
     
     Повертай тільки валідний JSON з полями top_picks, advice_text (HTML з <p> та <strong>) та опційно notes.`;
 
-  const userContent = `Запит користувача: "${originalQuery}"
+  const pc = options?.productContext;
+  const contextBlock =
+    pc?.id && pc.name?.trim()
+      ? `Обраний товар для контексту (запит користувача стосується цього товару): id="${pc.id}" name="${pc.name.trim()}".
+Якщо цей товар є в списку кандидатів — обов'язково включи його в top_picks серед перших (якщо це відповідає запиту), і зроби пораду релевантною до нього.
+
+`
+      : "";
+
+  const userContent = `${contextBlock}Запит користувача: "${originalQuery}"
 
 Структурований перепис (Stage 1): 
 ${rewrittenBlob}
@@ -158,6 +170,22 @@ ${buildCandidatesText(matches)}
         confidence,
       };
       filtered = [syntheticPick, ...filtered.filter((p) => p.id !== bestTechnika.id)].slice(0, 3);
+    }
+    const ctxId = options?.productContext?.id;
+    if (ctxId) {
+      const ctxMatch = matches.find((m) => m.id === ctxId);
+      const hasCtx = filtered.some((p) => p.id === ctxId);
+      if (ctxMatch && !hasCtx) {
+        filtered = [
+          {
+            id: ctxMatch.id,
+            reason: "Товар, який користувач обрав для контексту запиту.",
+            usage_tip: "Дотримуйтесь інструкції виробника до цього товару.",
+            confidence: Math.min(1, Math.max(0.65, ctxMatch.similarity ?? 0.85)),
+          },
+          ...filtered.filter((p) => p.id !== ctxId),
+        ].slice(0, 3);
+      }
     }
     const advice_text =
       typeof data.advice_text === "string" && data.advice_text.trim()

@@ -15,9 +15,15 @@ export type ProductReasonsResult =
  * For each product, generates a short reason (why it fits the query) and usage_tip (how to use)
  * using the user query and product name (+ brand/category). One batch LLM call.
  */
+export type ProductReasonsOptions = {
+  /** Користувач задав контекст конкретного товару — пояснення мають бути релевантні й до нього. */
+  contextProductName?: string | null;
+};
+
 export async function generateProductReasons(
   query: string,
-  products: ProductMatch[]
+  products: ProductMatch[],
+  options?: ProductReasonsOptions
 ): Promise<ProductReasonsResult> {
   if (products.length === 0) {
     return { ok: true, data: {} };
@@ -39,7 +45,13 @@ export async function generateProductReasons(
 Повертай тільки валідний JSON об'єкт, де ключі — це id товарів з списку (рядки в лапках), а значення — об'єкти з полями "reason" та "usage_tip". Приклад:
 {"id1": {"reason": "...", "usage_tip": "..."}, "id2": {...}}`;
 
-  const userContent = `Запит користувача: "${query}"
+  const ctx =
+    options?.contextProductName?.trim() &&
+    `Контекст: користувач обрав товар "${options.contextProductName.trim()}" — пояснюй зв'язок кожного кандидата з цим запитом і з контекстом товару, де доречно.
+
+`;
+
+  const userContent = `${ctx ?? ""}Запит користувача: "${query}"
 
 Список товарів (id використовуй як ключ у відповіді):
 ${list}
