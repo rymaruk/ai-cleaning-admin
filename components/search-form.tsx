@@ -124,9 +124,11 @@ export function SearchForm({
               />
               <span>{LOADING_PHRASES[phraseIndex]}</span>
             </div>
-          ) : !hasResults && !contextProduct ? (
+          ) : !hasResults ? (
             <p className="text-sm text-muted-foreground">
-              Привіт! Напиши, що шукаєш - підберемо ідеальне рішення
+              {contextProduct
+                ? "Привіт! Напиши своє питання, знайдемо ідеальне рішення"
+                : "Привіт! Напиши, що шукаєш - підберемо ідеальне рішення"}
             </p>
           ) : null}
         </div>
