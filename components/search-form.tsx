@@ -16,7 +16,7 @@ const LOADING_PHRASES = [
 ] as const;
 const PHRASE_ROTATE_MS = 5000;
 
-const QUERY_EXAMPLES = ["відмити плісняву на вікнах", "прибрати шерсть з килима", "почистити бруківку"] as const;
+const QUERY_EXAMPLES = [ "миючий пилосос", "відмити плісняву на вікнах", "прибрати шерсть з килима", "почистити бруківку"] as const;
 
 type SearchFormProps = {
   query: string;
@@ -114,11 +114,11 @@ export function SearchForm({
               />
               <span>{LOADING_PHRASES[phraseIndex]}</span>
             </div>
-          ) : (
+          ) : !hasResults ? (
             <p className="text-sm text-muted-foreground">
-              Опишіть забруднення, а ми підберемо ідеальне рішення
+              Привіт! Напиши, що шукаєш - підберемо ідеальне рішення
             </p>
-          )}
+          ) : null}
         </div>
       </div>
       <div className="space-y-2">
