@@ -127,7 +127,7 @@ export function SearchForm({
           ) : !hasResults ? (
             <p className="text-sm text-muted-foreground">
               {contextProduct
-                ? "Привіт! Напиши своє питання, знайдемо ідеальне рішення"
+                ? "Привіт! Напиши своє питання по товару ⤵"
                 : "Привіт! Напиши, що шукаєш - підберемо ідеальне рішення"}
             </p>
           ) : null}
