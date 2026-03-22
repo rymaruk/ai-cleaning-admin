@@ -94,7 +94,7 @@ export function SearchForm({
                   alt="Appiclean"
                   width={60}
                   height={20}
-                  className="shrink-0 object-contain ml-[-6px] mt-[-8px] mb-2"
+                  className="shrink-0 object-contain -ml-1.5 -mt-2 mb-2"
                 />
                   <h2 className="text-md lg:text-xl font-semibold leading-none tracking-tight mb-2">
                     AI Експерт
@@ -104,7 +104,7 @@ export function SearchForm({
                 type="button"
                 size="sm"
                 variant="link"
-                className="ml-auto px-2 py-0 mr-[-10px] mt-[-10px]"
+                className="ml-auto px-2 py-0 -mr-2.5 -mt-2.5"
                 aria-label="Закрити"
                 onClick={() => {
                   window.parent?.postMessage({ type: "AI_WIDGET_CLOSE" }, "*");
@@ -172,7 +172,7 @@ export function SearchForm({
             value={query}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="min-h-[46px] resize-none w-full py-2 pr-24"
+            className="min-h-11.5 resize-none w-full py-2 pr-24"
             disabled={loading}
           />
           <div className="absolute inset-y-0 right-0 z-10 flex items-stretch pr-2 py-1.5">

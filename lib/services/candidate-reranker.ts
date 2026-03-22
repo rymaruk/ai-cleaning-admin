@@ -188,7 +188,7 @@ ${buildCandidatesText(matches)}
       }
     }
     const advice_text =
-      typeof data.advice_text === "string" && data.advice_text.trim()
+      data.advice_text.trim()
         ? data.advice_text.trim()
         : "Рекомендовано обрати один із товарів вище згідно з вашим запитом.";
     return {

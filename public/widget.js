@@ -39,6 +39,28 @@
     "transform: translateY(12px)",
   ].join(";");
 
+  function isProductPage() {
+    return !!document.querySelector(
+      'section.product[itemtype="https://schema.org/Product"]'
+    );
+  }
+
+  function postProductContextToIframe() {
+    if (!isProductPage()) return;
+    try {
+      iframe.contentWindow.postMessage(
+        { type: "AI_WIDGET_SET_PRODUCT_CONTEXT", url: window.location.href },
+        WIDGET_URL
+      );
+    } catch (e) {
+      // ignore cross-origin or missing contentWindow
+    }
+  }
+
+  iframe.addEventListener("load", function () {
+    setTimeout(postProductContextToIframe, 400);
+  });
+
   // Toggle button
   var btn = document.createElement("button");
 
@@ -88,6 +110,23 @@
   ].join(";");
   // Ensure dynamic closed-state styles win over base cssText
   renderClosedButton();
+
+  function applyProductPageClickedState() {
+    if (!isProductPage()) return;
+    hasClicked = true;
+    try {
+      window.localStorage.setItem(HAS_CLICKED_KEY, "1");
+    } catch (e) {
+      // ignore storage access failures
+    }
+    renderClosedButton();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyProductPageClickedState);
+  } else {
+    applyProductPageClickedState();
+  }
 
   var btnGradient = "linear-gradient(257deg, rgb(255 151 151), rgb(118, 82, 255))";
   var btnGradientHover = "linear-gradient(257deg, rgb(235 131 131), rgb(98, 62, 235))";

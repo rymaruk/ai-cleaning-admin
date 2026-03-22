@@ -30,8 +30,6 @@ type SearchResultsProps = {
 
 export function SearchResults({
   loading,
-  query,
-  submittedQuery,
   matches,
   recommendation,
   recommendedList,
@@ -67,11 +65,11 @@ export function SearchResults({
         {showResults && (
           <>
             <div
-              className={`overflow-hidden h-[60px] sticky top-0 left-0 z-10 mx-0 px-[20px] mb-0 flex items-center justify-between gap-4 bg-transparent transition-shadow duration-200 `}
+              className={`overflow-hidden h-15 sticky top-0 left-0 z-10 mx-0 px-5 mb-0 flex items-center justify-between gap-4 bg-transparent transition-shadow duration-200 `}
             >
               <button
                   type="button"
-                  className="ml-auto mr-[-12px] shrink-0 p-2 rounded-full bg-gray-100 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-00"
+                  className="ml-auto -mr-3 shrink-0 p-2 rounded-full bg-gray-100 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-00"
                   onClick={() => {
                     // Tell the embedding page to close the widget iframe
                     window.parent?.postMessage({ type: "AI_WIDGET_CLOSE" }, "*");
@@ -84,7 +82,7 @@ export function SearchResults({
               <div ref={adviceSectionRef} className="mb-8">
                 <Card className="border-none shadow-none">
                   <CardContent className="p-0 border-none shadow-none">
-                    <div className="relative translate-x-[-10px] translate-y-[-10px]">
+                    <div className="relative -translate-x-2.5 -translate-y-2.5">
                       <Image
                         src="/cleaning-robot-3d-icon-png-download-13763983.png"
                         alt="Помічник з прибирання"

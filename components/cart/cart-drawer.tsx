@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import type { ProductMatch } from "@/lib/product-types";
 import type { CartItem } from "@/lib/cart-types";
-import { cartTotal } from "@/lib/cart-types";
 
 type CartDrawerProps = {
   open: boolean;
