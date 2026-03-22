@@ -70,7 +70,6 @@ export function SearchForm({
     }
 
     window.addEventListener("message", handleMessage);
-    void onProductContextUrl?.("https://appiclean.com.ua/pylosos-dlia-sukhoho-prybyrannia-z-mishkom-wd-5-v-25-6-22/");
 
     return () => window.removeEventListener("message", handleMessage);
   }, [onProductContextUrl]);
