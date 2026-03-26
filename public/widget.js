@@ -41,7 +41,7 @@
 
   function isProductPage() {
     return !!document.querySelector(
-      'section.product[itemtype="https://schema.org/Product"]'
+      '.product[itemtype="https://schema.org/Product"][itemscope]'
     );
   }
 
