@@ -1,5 +1,5 @@
 import { getSupabaseClient } from "@/lib/clients/supabase";
-import type { AiAgentQueryLogInsert } from "@/lib/types/ai-agent-query-log";
+import type { AiAgentQueryLogInsert, ResultShownItem } from "@/lib/types/ai-agent-query-log";
 
 const MAX_QUERY_LENGTH = 10_000;
 const MAX_METADATA_KEYS = 50;
@@ -40,6 +40,7 @@ export type InsertAiAgentQueryLogParams = {
   ipAddress?: string | null;
   userAgent?: string | null;
   metadata?: Record<string, unknown>;
+  resultsShown?: ResultShownItem[] | null;
 };
 
 /**
@@ -56,6 +57,7 @@ export async function insertAiAgentQueryLog(params: InsertAiAgentQueryLogParams)
     ip_address: params.ipAddress ?? null,
     user_agent: params.userAgent ?? null,
     metadata: params.metadata ? sanitizeMetadata(params.metadata) : {},
+    results_shown: params.resultsShown ?? null,
   };
 
   const supabase = getSupabaseClient();

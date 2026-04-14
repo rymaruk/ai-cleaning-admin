@@ -47,19 +47,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Log AI agent query for analytics (server-side; IP/user-agent from request)
     const { ipAddress, userAgent } = getRequestLogContext(request);
-    void insertAiAgentQueryLog({
-      queryText: query,
-      ipAddress,
-      userAgent,
-      metadata: {
-        source: "match-products",
-        matchCount,
-        minSimilarity,
-        productUrl: productUrl?.trim() || undefined,
-      },
-    }).catch((err) => console.warn("[match-products] Query log failed:", err));
 
     const missing = [
       !process.env.OPENAI_API_KEY && "OPENAI_API_KEY",
@@ -136,6 +124,33 @@ export async function POST(request: NextRequest) {
     } else {
       console.warn("[match-products] productReasons failed:", reasonsResult.error);
     }
+
+    // Build results_shown: all matches with is_recommended flag
+    const recommendedIds = new Set(
+      recommendation?.top_picks?.map((p) => p.id) ?? []
+    );
+    const resultsShown = matchesValidated.map((m) => ({
+      id: m.id,
+      name: m.name,
+      brand: m.brand ?? null,
+      price: m.price ?? null,
+      similarity: m.similarity ?? null,
+      is_recommended: recommendedIds.has(m.id),
+    }));
+
+    // Log AI agent query for analytics (server-side, after pipeline completes)
+    void insertAiAgentQueryLog({
+      queryText: query,
+      ipAddress,
+      userAgent,
+      metadata: {
+        source: "match-products",
+        matchCount,
+        minSimilarity,
+        productUrl: productUrl?.trim() || undefined,
+      },
+      resultsShown,
+    }).catch((err) => console.warn("[match-products] Query log failed:", err));
 
     return NextResponse.json({
       query,
