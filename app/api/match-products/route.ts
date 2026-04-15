@@ -8,6 +8,8 @@ import { generateProductReasons } from "@/lib/services/product-reasons";
 import { ProductMatchSchema } from "@/lib/product-types";
 import { getRequestLogContext } from "@/lib/utils/request-context";
 import { insertAiAgentQueryLog } from "@/lib/services/log-ai-query";
+import { validateWidgetToken } from "@/lib/services/validate-widget-token";
+import { matchProjectProductsByQuery } from "@/lib/services/match-project-products";
 
 export const runtime = "nodejs";
 
@@ -20,6 +22,8 @@ const RequestBodySchema = z.object({
   minSimilarity: z.number().min(0).max(1).optional(),
   /** URL товару з таблиці products — пошук у контексті цього товару (embedding + промпти). */
   productUrl: z.string().url().optional(),
+  /** Widget token for project-scoped search. */
+  widgetToken: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -32,9 +36,32 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const { query, productUrl } = parsed.data;
+    const { query, productUrl, widgetToken } = parsed.data;
     const matchCount = parsed.data.matchCount ?? DEFAULT_PIPELINE_MATCH_COUNT;
     const minSimilarity = parsed.data.minSimilarity ?? DEFAULT_PIPELINE_MIN_SIMILARITY;
+
+    // Validate widget token if present (multi-tenant project-scoped search)
+    let projectId: string | null = null;
+    if (widgetToken) {
+      const tokenResult = await validateWidgetToken(widgetToken);
+      if (!tokenResult.valid) {
+        const reasonMessages: Record<string, string> = {
+          not_found: "Invalid widget token",
+          expired: "Widget subscription has expired",
+          no_subscription: "Widget subscription has expired",
+          domain_mismatch: "Domain not allowed for this token",
+          no_products: "No products available for this project",
+        };
+        return NextResponse.json(
+          {
+            error: reasonMessages[tokenResult.reason] ?? "Widget token invalid",
+            code: "SUBSCRIPTION_EXPIRED",
+          },
+          { status: 403 }
+        );
+      }
+      projectId = tokenResult.projectId;
+    }
 
     let contextRow: Awaited<ReturnType<typeof fetchProductContextByUrl>> = null;
     if (productUrl?.trim()) {
@@ -80,13 +107,29 @@ export async function POST(request: NextRequest) {
       console.warn("[match-products] Stage1 rewriter failed, using raw query:", rewriterResult.error);
     }
 
-    // Embedding + RPC (use rewritten text for AND-like search when available)
-    const matches = await matchProductsByQuery(query, {
-      matchCount,
-      minSimilarity,
-      embeddingText: embeddingText ?? undefined,
-      contextProductEmbedding: contextRow?.embedding ?? null,
-    });
+    // Embedding + RPC — project-scoped if token present, otherwise legacy global
+    const matches = projectId
+      ? (await matchProjectProductsByQuery(query, projectId, {
+          matchCount,
+          minSimilarity,
+          embeddingText: embeddingText ?? undefined,
+        })).map((m) => ({
+          id: m.id,
+          name: m.name ?? "",
+          brand: m.brand ?? null,
+          category_name: m.category ?? null,
+          price: m.price ?? null,
+          currency: m.currency ?? null,
+          images: m.images ?? null,
+          url: m.url ?? null,
+          similarity: m.similarity ?? null,
+        }))
+      : await matchProductsByQuery(query, {
+          matchCount,
+          minSimilarity,
+          embeddingText: embeddingText ?? undefined,
+          contextProductEmbedding: contextRow?.embedding ?? null,
+        });
 
     // Stage 2: Reranker (if fail, still return matches with fallback recommendation)
     const FALLBACK_ADVICE =
@@ -150,6 +193,7 @@ export async function POST(request: NextRequest) {
         productUrl: productUrl?.trim() || undefined,
       },
       resultsShown,
+      projectId,
     }).catch((err) => console.warn("[match-products] Query log failed:", err));
 
     return NextResponse.json({

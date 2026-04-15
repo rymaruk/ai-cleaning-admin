@@ -22,7 +22,8 @@ const nextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value: "frame-ancestors 'self' https://appiclean.com.ua",
+            // Allow embedding from any domain — token validation happens at API level
+            value: "frame-ancestors *",
           },
         ],
       },

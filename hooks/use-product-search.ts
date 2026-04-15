@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect, type KeyboardEvent } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo, type KeyboardEvent } from "react";
 import type { ProductMatch, ProductContextBrief } from "@/lib/product-types";
 import type { RewriterOutput } from "@/lib/match-pipeline-types";
 import type { RerankerOutput } from "@/lib/match-pipeline-types";
@@ -33,6 +33,13 @@ export type UseProductSearchResult = {
 };
 
 export function useProductSearch(): UseProductSearchResult {
+  // Read widget token from iframe URL (passed by widget.js via ?t=TOKEN)
+  const widgetToken = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const params = new URLSearchParams(window.location.search);
+    return params.get("t") || null;
+  }, []);
+
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [matchCount, setMatchCount] = useState(DEFAULT_MATCH_COUNT);
@@ -102,6 +109,9 @@ export function useProductSearch(): UseProductSearchResult {
         if (contextProduct?.url) {
           body.productUrl = contextProduct.url;
         }
+        if (widgetToken) {
+          body.widgetToken = widgetToken;
+        }
         const res = await fetch("/api/match-products", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -109,7 +119,11 @@ export function useProductSearch(): UseProductSearchResult {
         });
         const data = await res.json();
         if (!res.ok) {
-          setError(data?.error ?? "Помилка пошуку");
+          if (data?.code === "SUBSCRIPTION_EXPIRED") {
+            setError("Підписка на віджет закінчилась. Зверніться до адміністратора сайту.");
+          } else {
+            setError(data?.error ?? "Помилка пошуку");
+          }
           return;
         }
         setMatches(data.matches ?? []);
@@ -121,7 +135,7 @@ export function useProductSearch(): UseProductSearchResult {
         setLoading(false);
       }
     },
-    [query, matchCount, minSimilarity, contextProduct?.url]
+    [query, matchCount, minSimilarity, contextProduct?.url, widgetToken]
   );
 
   const handleKeyDown = useCallback(

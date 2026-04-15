@@ -21,6 +21,7 @@ export type AiAgentQueryLogRow = {
   created_at: string;
   metadata: Record<string, unknown>;
   results_shown: ResultShownItem[] | null;
+  project_id: string | null;
 };
 
 export type AiAgentQueryLogInsert = {
@@ -30,4 +31,5 @@ export type AiAgentQueryLogInsert = {
   user_agent?: string | null;
   metadata?: Record<string, unknown>;
   results_shown?: ResultShownItem[] | null;
+  project_id?: string | null;
 };

@@ -3,45 +3,20 @@ import { NextResponse, type NextRequest } from "next/server";
 const ALLOWED_ORIGIN = "https://appiclean.com.ua";
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
-  // Protect widget.js so it can only be embedded from https://appiclean.com.ua
-  if (pathname === "/widget.js") {
-    const origin = request.headers.get("origin");
-    const referer = request.headers.get("referer");
+  // widget.js is now handled by app/widget.js/route.ts (dynamic route)
+  // Only protect the main widget app iframe route (/)
 
-    let refererOrigin: string | null = null;
-    if (referer) {
-      try {
-        refererOrigin = new URL(referer).origin;
-      } catch {
-        refererOrigin = null;
-      }
-    }
-
-    const isAllowed =
-      origin === ALLOWED_ORIGIN || refererOrigin === ALLOWED_ORIGIN;
-
-    if (!isAllowed) {
-      return new NextResponse(
-        JSON.stringify({
-          error: "Forbidden",
-          message:
-            "Forbidden",
-        }),
-        {
-          status: 403,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    }
-  }
-
-  // Protect main widget app so it can only be loaded in an iframe
-  // on https://appiclean.com.ua
   if (pathname === "/") {
+    const hasToken = !!searchParams.get("t");
+
+    // If a widget token is present, allow from any origin (validated at API level)
+    if (hasToken) {
+      return NextResponse.next();
+    }
+
+    // Legacy mode: only allow iframe from appiclean.com.ua
     const referer = request.headers.get("referer");
     const secFetchDest = request.headers.get("sec-fetch-dest");
 
@@ -78,6 +53,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/widget.js", "/"],
+  matcher: ["/"],
 };
-

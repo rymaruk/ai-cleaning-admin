@@ -41,6 +41,7 @@ export type InsertAiAgentQueryLogParams = {
   userAgent?: string | null;
   metadata?: Record<string, unknown>;
   resultsShown?: ResultShownItem[] | null;
+  projectId?: string | null;
 };
 
 /**
@@ -58,6 +59,7 @@ export async function insertAiAgentQueryLog(params: InsertAiAgentQueryLogParams)
     user_agent: params.userAgent ?? null,
     metadata: params.metadata ? sanitizeMetadata(params.metadata) : {},
     results_shown: params.resultsShown ?? null,
+    project_id: params.projectId ?? null,
   };
 
   const supabase = getSupabaseClient();
